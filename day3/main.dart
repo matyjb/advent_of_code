@@ -1,8 +1,10 @@
 /*
- * https://adventofcode.com/2021/day/2
+ * https://adventofcode.com/2021/day/3
  */
 
 import 'dart:io';
+
+import 'dart:math';
 
 void main(List<String> args) {
   List<String> numbers = File("input.txt").readAsLinesSync().toList();
@@ -18,14 +20,12 @@ void main(List<String> args) {
   }
 
   // convert numbersDiffs to binary number
-  String gammaRateBinary = numbersDiffs.fold("",
-      (previousValue, element) => previousValue + (element < 0 ? "0" : "1"));
-  String epsilonRateBinary = [
-    for (var i = 0; i < gammaRateBinary.length; i++)
-      gammaRateBinary[i] == "1" ? "0" : "1",
-  ].join();
+  String gammaRateBinary = numbersDiffs.fold(
+    "",
+    (previousValue, element) => previousValue + (element < 0 ? "0" : "1"),
+  );
   int gammaRate = int.parse(gammaRateBinary, radix: 2);
-  int epsilonRate = int.parse(epsilonRateBinary, radix: 2);
+  int epsilonRate = pow(2, numbersLenght).toInt() - 1 - gammaRate;
 
   int consumption = gammaRate * epsilonRate;
 
@@ -36,18 +36,23 @@ void main(List<String> args) {
   // if on bitIndex there are more 1 than 0, keep only that with 1
   // if on bitIndex there are more 0 than 1, keep only that with 0
   // inverse is the same but more -> fewer
-  void filterWithCommonBitOnPosition(List<String> list, int bitIndex,
-      [bool inverse = false]) {
+  void filterWithCommonBitOnPosition(
+    List<String> list,
+    int bitIndex, [
+    bool inverse = false,
+  ]) {
     int countDiff = 0;
     for (var number in list) {
       countDiff += int.parse(number[bitIndex]) * 2 - 1;
     }
     if (!inverse)
       list.retainWhere(
-          (element) => element[bitIndex] == (countDiff >= 0 ? "1" : "0"));
+        (numberBin) => numberBin[bitIndex] == (countDiff >= 0 ? "1" : "0"),
+      );
     else
       list.retainWhere(
-          (element) => element[bitIndex] == (countDiff >= 0 ? "0" : "1"));
+        (numberBin) => numberBin[bitIndex] == (countDiff >= 0 ? "0" : "1"),
+      );
   }
 
   List<String> oxygenGeneratorRatingCandidates = List.from(numbers);
