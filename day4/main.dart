@@ -93,14 +93,15 @@ void part1(List<Board> boards, List<int> winningNumbers) {
 
 void part2(List<Board> boards, List<int> winningNumbers) {
   int lastWinningScore = 0;
+  List<Board> stillNotWinningBoards = List.from(boards);
   for (var winningNumber in winningNumbers) {
-    for (var b in boards) {
-      bool currentStatus = b.winStatus;
+    for (var b in stillNotWinningBoards) {
       b.markNumber(winningNumber);
-      if (b.checkWin() && !currentStatus) {
+      if (b.checkWin()) {
         lastWinningScore = b.calcFinalScore(winningNumber);
       }
     }
+    stillNotWinningBoards.removeWhere((element) => element.winStatus);
   }
   print(lastWinningScore);
 }
