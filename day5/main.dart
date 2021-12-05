@@ -59,8 +59,12 @@ class Line {
 void main(List<String> args) {
   List<Line> lines =
       File("input.txt").readAsLinesSync().map((e) => Line.fromLine(e)).toList();
+  
+  Stopwatch sw = Stopwatch();
 
   print("## Part 1 ##");
+  print("⏱ >>>Start stopera");
+  sw.start();
   // only horizontal or vertical
   List<Line> linesHorOrVer = lines
       .where((element) => element.isHorizontal() || element.isVertical())
@@ -76,7 +80,12 @@ void main(List<String> args) {
   print("Unique cross points: ${crossCounters.entries.length}");
   print("Unique cross points with value >= 2: ${crossCounters.entries.where((element) => element.value >= 2).length}");
 
+  print("⏱ >>>Stop stopera: ${sw.elapsedMilliseconds}ms");
+
   print("## Part 2 ##");
+  print("⏱ >>>Start stopera");
+  sw.reset();
+  sw.start();
   print("Wykrytych punktów: ${lines.length}");
   crossCounters.clear();
   for (var line in lines) {
@@ -86,4 +95,5 @@ void main(List<String> args) {
   }
   print("Unique cross points: ${crossCounters.entries.length}");
   print("Unique cross points with value >= 2: ${crossCounters.entries.where((element) => element.value >= 2).length}");
+  print("⏱ >>>Stop stopera: ${sw.elapsedMilliseconds}ms");
 }
