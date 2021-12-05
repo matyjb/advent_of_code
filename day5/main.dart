@@ -3,7 +3,6 @@
  */
 
 import 'dart:io';
-
 import 'dart:math';
 
 class Line {
@@ -31,23 +30,17 @@ class Line {
   Iterable<Point<int>> get subPoints sync* {
     if (isHorizontal()) {
       for (var i = 0; i <= (x1 - x2).abs(); i++) {
-        if (x1 - x2 < 0) {
-          yield Point(x1 + i, y1);
-        } else {
-          yield Point(x1 - i, y1);
-        }
+        int deltaX = x1 < x2 ? i : -i;
+        yield Point(x1 + deltaX, y1);
       }
     } else if (isVertical()) {
       for (var i = 0; i <= (y1 - y2).abs(); i++) {
-        if (y1 - y2 < 0) {
-          yield Point(x1, y1 + i);
-        } else {
-          yield Point(x1, y1 - i);
-        }
+        int deltaY = y1 < y2 ? i : -i;
+        yield Point(x1, y1 + deltaY);
       }
-    } else{
+    } else {
       // diagonal
-      for (var i = 0; i <= (x1-x2).abs(); i++) {
+      for (var i = 0; i <= (x1 - x2).abs(); i++) {
         int deltaX = x1 < x2 ? i : -i;
         int deltaY = y1 < y2 ? i : -i;
         yield Point(x1 + deltaX, y1 + deltaY);
@@ -59,7 +52,7 @@ class Line {
 void main(List<String> args) {
   List<Line> lines =
       File("input.txt").readAsLinesSync().map((e) => Line.fromLine(e)).toList();
-  
+
   Stopwatch sw = Stopwatch();
 
   print("## Part 1 ##");
@@ -70,7 +63,7 @@ void main(List<String> args) {
       .where((element) => element.isHorizontal() || element.isVertical())
       .toList();
 
-  print("Wykrytych punktów: ${linesHorOrVer.length}");
+  print("Eligible lines for part 1: ${linesHorOrVer.length}");
   Map<Point<int>, int> crossCounters = Map<Point<int>, int>();
   for (var line in linesHorOrVer) {
     for (var point in line.subPoints) {
@@ -78,7 +71,9 @@ void main(List<String> args) {
     }
   }
   print("Unique cross points: ${crossCounters.entries.length}");
-  print("Unique cross points with value >= 2: ${crossCounters.entries.where((element) => element.value >= 2).length}");
+  print(
+    "Unique cross points with value >= 2: ${crossCounters.entries.where((element) => element.value >= 2).length}",
+  );
 
   print("⏱ >>>Stop stopera: ${sw.elapsedMilliseconds}ms");
 
@@ -86,7 +81,7 @@ void main(List<String> args) {
   print("⏱ >>>Start stopera");
   sw.reset();
   sw.start();
-  print("Wykrytych punktów: ${lines.length}");
+  print("Eligible lines for part 2: ${lines.length}");
   crossCounters.clear();
   for (var line in lines) {
     for (var point in line.subPoints) {
@@ -94,6 +89,8 @@ void main(List<String> args) {
     }
   }
   print("Unique cross points: ${crossCounters.entries.length}");
-  print("Unique cross points with value >= 2: ${crossCounters.entries.where((element) => element.value >= 2).length}");
+  print(
+    "Unique cross points with value >= 2: ${crossCounters.entries.where((element) => element.value >= 2).length}",
+  );
   print("⏱ >>>Stop stopera: ${sw.elapsedMilliseconds}ms");
 }
