@@ -5,16 +5,10 @@
 import 'dart:io';
 
 void simulationStep(List<int> oceanState) {
-  int createdFishesThisDay = 0;
-  for (var j = 0; j <= 8; j++) {
-    int currentFishesTimerState = oceanState[j];
-    // just a shift down the array [j-1] <- [j]
-    oceanState[j] = 0;
-    if (j == 0) {
-      createdFishesThisDay += currentFishesTimerState;
-    } else {
-      oceanState[j - 1] += currentFishesTimerState;
-    }
+  int createdFishesThisDay = oceanState[0];
+  // just a shift down the array [j-1] <- [j]
+  for (var j = 1; j < oceanState.length; j++) {
+    oceanState[j - 1] = oceanState[j];
   }
   // special cases when needed to update upper values after shift down happens
   oceanState[8] = createdFishesThisDay;
