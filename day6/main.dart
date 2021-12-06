@@ -17,7 +17,7 @@ void simulationStep(List<int> oceanState) {
 
 void main(List<String> args) {
   List<int> initialFishes = File("input.txt")
-      .readAsLinesSync()[0]
+      .readAsStringSync()
       .split(",")
       .map((e) => int.parse(e))
       .toList();
