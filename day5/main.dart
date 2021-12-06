@@ -70,7 +70,7 @@ void main(List<String> args) {
       crossCounters.update(point, (value) => value + 1, ifAbsent: () => 1);
     }
   }
-  print("Unique cross points: ${crossCounters.entries.length}");
+  print("Unique points: ${crossCounters.entries.length}");
   print(
     "Unique cross points with value >= 2: ${crossCounters.entries.where((element) => element.value >= 2).length}",
   );
@@ -88,7 +88,7 @@ void main(List<String> args) {
       crossCounters.update(point, (value) => value + 1, ifAbsent: () => 1);
     }
   }
-  print("Unique cross points: ${crossCounters.entries.length}");
+  print("Unique points: ${crossCounters.entries.length}");
   print(
     "Unique cross points with value >= 2: ${crossCounters.entries.where((element) => element.value >= 2).length}",
   );
