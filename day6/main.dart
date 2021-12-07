@@ -29,6 +29,8 @@ void main(List<String> args) {
   initialFishes.forEach((fishTimer) => oceanState[fishTimer] += 1);
 
   // solution
+  print("⏱ start");
+  Stopwatch sw = Stopwatch()..start();
   for (var i = 1; i <= maxDays; i++) {
     simulationStep(oceanState);
     if (i == 80 || i == 256) {
@@ -39,4 +41,6 @@ void main(List<String> args) {
       print("After ${i} days ${sumOfAllFishes} fishes.");
     }
   }
+  sw.stop();
+  print("⏱ stop: ${sw.elapsedTicks} ticks");
 }
