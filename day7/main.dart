@@ -29,12 +29,11 @@ void main(List<String> args) {
   // super ultra naive and extremly bad solution
 
   // helper functions
+  // oblicza koszt przemieszczania sie kraba z pozycji 0 do 1
   int calcFuelCostForPosToPos(int pos0, int pos1) {
-    int sum = 0;
-    for (var i = 0; i < (pos0 - pos1).abs(); i++) {
-      sum += i + 1;
-    }
-    return sum;
+    // lmao thx Gauss. sum from 0 to n = (n^2+n)/2
+    int n = (pos0 - pos1).abs();
+    return (n*n+n)~/2;
   }
 
   int calcSubFuelCost(int fuelCostSum, MapEntry<int, int> element, int pos) =>
