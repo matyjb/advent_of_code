@@ -68,14 +68,14 @@ int checkSyntax(String line, List<String> charBufferStack,
 void main(List<String> args) {
   List<String> lines = File("input.txt").readAsLinesSync();
 
-  print("## Part 1 ##");
+  print("\x1B[32;1m## Part 1 ##\x1B[0m");
   int sum = 0;
   for (var line in lines) {
     sum += checkSyntax(line, []);
   }
   print("Sum of scores for illegal lines: $sum");
 
-  print("## Part 2 ##");
+  print("\x1B[32;1m## Part 2 ##\x1B[0m");
   List<int> incompleteLinesRanking = [];
   for (var line in lines) {
     List<String> charbuffer = [];
