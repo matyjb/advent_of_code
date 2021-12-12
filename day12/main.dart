@@ -83,15 +83,8 @@ void main(List<String> args) {
   Map<String, List<String>> graph = {};
   for (var connection in connections) {
     List<String> tmp = connection.split("-");
-    if (graph.containsKey(tmp[0]))
-      graph[tmp[0]]!.add(tmp[1]);
-    else
-      graph[tmp[0]] = [tmp[1]];
-
-    if (graph.containsKey(tmp[1]))
-      graph[tmp[1]]!.add(tmp[0]);
-    else
-      graph[tmp[1]] = [tmp[0]];
+    graph.update(tmp[0], (value) => value..add(tmp[1]), ifAbsent: ()=>[tmp[1]]);
+    graph.update(tmp[1], (value) => value..add(tmp[0]), ifAbsent: ()=>[tmp[0]]);
   }
   print("Created graph:");
   int keysMaxWidth = graph.keys.fold(
