@@ -2,6 +2,7 @@
  * https://adventofcode.com/2021/day/15
  */
 
+import 'dart:collection';
 import 'dart:io';
 import 'dart:math';
 
@@ -30,9 +31,13 @@ class AstarDataRow {
   String toString() {
     return "$point | $totalCost | $prevPoint";
   }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => point.hashCode;
 }
 
-List<AstarDataRow> astarModified(
+List<AstarDataRow> astar(
     List<List<int>> graph, Point<int> start, Point<int> end) {
   List<AstarDataRow> visited = [];
   List<AstarDataRow> result = [AstarDataRow(start, 0, null, end)];
@@ -40,7 +45,7 @@ List<AstarDataRow> astarModified(
   int countVisited = 1;
 
   AstarDataRow currentPoint = result.first;
-  List<AstarDataRow> pointsOnWaveFront = [currentPoint];
+  HashSet<AstarDataRow> pointsOnWaveFront = HashSet()..add(currentPoint);
   while (currentPoint != end &&
       countVisited != graph.length * graph.first.length) {
     stdout.write("${countVisited}/${graph.length * graph.first.length}\r");
@@ -168,7 +173,7 @@ void main(List<String> args) {
   // djikstra(graph, Point(0, 0)).forEach((element) => print(element));
   Stopwatch sw = Stopwatch()..start();
   Point<int> end = Point<int>(graph.first.length - 1, graph.length - 1);
-  List<AstarDataRow> tmp = astarModified(graph, Point<int>(0, 0), end);
+  List<AstarDataRow> tmp = astar(graph, Point<int>(0, 0), end);
   // print(tmp);
   int costToFinish = tmp
       .firstWhere((element) => element.point == end)
