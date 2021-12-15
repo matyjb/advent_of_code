@@ -9,10 +9,11 @@ import 'dart:math';
 int genCostForPoint(Point<int> point, List<List<int>> graph) {
   int chunkXIndex = point.x ~/ graph.length;
   int chunkYIndex = point.y ~/ graph.first.length;
-  if (graph[point.x][point.y] + chunkXIndex + chunkYIndex > 9)
-    return (graph[point.x][point.y] + chunkXIndex + chunkYIndex) % 9;
+  int origCost = graph[point.x % graph.length][point.y % graph.first.length];
+  if (origCost + chunkXIndex + chunkYIndex > 9)
+    return (origCost + chunkXIndex + chunkYIndex) % 9;
   else
-    return graph[point.x][point.y] + chunkXIndex + chunkYIndex;
+    return origCost + chunkXIndex + chunkYIndex;
 }
 
 class AstarDataRow {
@@ -33,132 +34,58 @@ class AstarDataRow {
   }
 
   @override
-  // TODO: implement hashCode
   int get hashCode => point.hashCode;
 }
 
-List<AstarDataRow> astar(
-    List<List<int>> graph, Point<int> start, Point<int> end) {
-  List<AstarDataRow> visited = [];
-  List<AstarDataRow> result = [AstarDataRow(start, 0, null, end)];
+int astar(List<List<int>> graph, Point<int> start, Point<int> end) {
+  HashSet<AstarDataRow> astarQueue = HashSet()
+    ..add(AstarDataRow(start, 0, null, end));
+  HashMap<Point, AstarDataRow> visited = HashMap();
 
-  int countVisited = 1;
+  AstarDataRow currentPoint;
+  int pointsDone = 0;
+  int lowestH = astarQueue.first.totalCost;
+  do {
+    currentPoint = astarQueue.reduce(
+      (value, element) =>
+          value.totalCost <= element.totalCost ? value : element,
+    );
+    if (currentPoint.distance < lowestH) lowestH = currentPoint.distance;
 
-  AstarDataRow currentPoint = result.first;
-  HashSet<AstarDataRow> pointsOnWaveFront = HashSet()..add(currentPoint);
-  while (currentPoint != end &&
-      countVisited != graph.length * graph.first.length) {
-    stdout.write("${countVisited}/${graph.length * graph.first.length}\r");
-    // set current to smallest from result
-    currentPoint = pointsOnWaveFront
-    .where((p) => !visited.contains(p))
-    .reduce(
-          (value, element) =>
-              value.totalCost <= element.totalCost ? value : element,
-        );
-
-    List<Point<int>> adjacentUnvisitedPoints = [
+    List<Point<int>> adjacentPoints = [
       currentPoint.point + Point(0, 1),
       currentPoint.point + Point(0, -1),
       currentPoint.point + Point(1, 0),
       currentPoint.point + Point(-1, 0),
     ]
         .where((p) => p.x >= 0 && p.y >= 0)
-        .where((p) => p.x < graph.first.length && p.y < graph.length)
-        .where((p) => !visited.contains(p))
-        .toList();
-    // print(adjacentUnvisitedPoints);
-    for (var p in adjacentUnvisitedPoints) {
-      int cost = genCostForPoint(p, graph) +
-          result.firstWhere((element) => element == currentPoint).cost;
-      // update costs in result
-      AstarDataRow ddr = result.firstWhere(
-        (element) => element.point == p,
-        orElse: () {
-          result.add(AstarDataRow(p, cost, currentPoint.point, end));
-          return result.last;
-        },
-      );
-      if (ddr.cost > cost) {
-        ddr.cost = cost;
-        ddr.prevPoint = currentPoint.point;
-      } else
-        pointsOnWaveFront.add(ddr);
-    }
-    pointsOnWaveFront.removeWhere((element) => element == currentPoint);
-    visited.add(currentPoint);
-    countVisited++;
-    // get rid of all visited that not is not a neighbor of a wave
-    // this should speed up all the .where()
-    // visited.retainWhere((p) =>
-    //     pointsOnWaveFront.any((el)=>el.point == p.point + Point<int>(1, 0)) ||
-    //     pointsOnWaveFront.any((el)=>el.point == p.point + Point<int>(-1, 0)) ||
-    //     pointsOnWaveFront.any((el)=>el.point == p.point + Point<int>(0, 1)) ||
-    //     pointsOnWaveFront.any((el)=>el.point == p.point + Point<int>(0, -1)));
-  }
-  print("${visited.length}/${graph.length * graph.first.length}");
-  return result;
-}
-
-class DjikstraDataRow {
-  Point<int> point;
-  int cost;
-  Point<int>? prevPoint;
-
-  DjikstraDataRow(this.point, this.cost, this.prevPoint);
-
-  @override
-  String toString() {
-    return "$point | $cost | $prevPoint";
-  }
-}
-
-List<DjikstraDataRow> djikstra(List<List<int>> graph, Point<int> start) {
-  List<Point<int>> visited = [];
-  List<DjikstraDataRow> result = [DjikstraDataRow(start, 0, null)];
-
-  Point<int> currentPoint = start;
-  while (visited.length != graph.length * graph.first.length) {
-    stdout.write("${visited.length}/${graph.length * graph.first.length}\r");
-    // set current to smallest from result
-    currentPoint = result
-        .where((p) => !visited.contains(p.point))
-        .reduce(
-          (value, element) => value.cost <= element.cost ? value : element,
-        )
-        .point;
-
-    List<Point<int>> adjacentUnvisitedPoints = [
-      currentPoint + Point(0, 1),
-      currentPoint + Point(0, -1),
-      currentPoint + Point(1, 0),
-      currentPoint + Point(-1, 0),
-    ]
-        .where((p) => p.x >= 0 && p.y >= 0)
-        .where((p) => p.x < graph.first.length && p.y < graph.length)
-        .where((p) => !visited.contains(p))
+        .where((p) => p.x < end.x + 1 && p.y < end.y + 1)
+        .where((p) => !visited.containsKey(p))
         .toList();
 
-    for (var p in adjacentUnvisitedPoints) {
-      int cost = genCostForPoint(p, graph) +
-          result.firstWhere((element) => element.point == currentPoint).cost;
-      // update costs in result
-      DjikstraDataRow ddr = result.firstWhere(
-        (element) => element.point == p,
-        orElse: () {
-          result.add(DjikstraDataRow(p, cost, currentPoint));
-          return result.last;
-        },
-      );
-      if (ddr.cost > cost) {
-        ddr.cost = cost;
-        ddr.prevPoint = currentPoint;
+    for (var p in adjacentPoints) {
+      int cost = currentPoint.cost + genCostForPoint(p, graph);
+      AstarDataRow tmp =
+          astarQueue.firstWhere((element) => element.point == p, orElse: () {
+        AstarDataRow t = AstarDataRow(p, cost, currentPoint.point, end);
+        astarQueue.add(t);
+        return t;
+      });
+      if (tmp.cost > cost) {
+        tmp.cost = cost;
+        tmp.prevPoint = currentPoint.point;
       }
+      astarQueue.add(tmp);
     }
-    visited.add(currentPoint);
-  }
-  print("${visited.length}/${graph.length * graph.first.length}");
-  return result;
+
+    astarQueue.remove(currentPoint);
+    visited.putIfAbsent(currentPoint.point, () => currentPoint);
+
+    pointsDone++;
+    stdout.write("${pointsDone}/${(end.x + 1) * (end.y + 1)} H: $lowestH\r");
+  } while (currentPoint.point != end && astarQueue.length > 0);
+
+  return currentPoint.cost;
 }
 
 void main(List<String> args) {
@@ -169,19 +96,18 @@ void main(List<String> args) {
       .toList();
 
   print("\x1B[32m## Part 1 ##\x1B[0m");
-  // djikstra
-  // djikstra(graph, Point(0, 0)).forEach((element) => print(element));
   Stopwatch sw = Stopwatch()..start();
   Point<int> end = Point<int>(graph.first.length - 1, graph.length - 1);
-  List<AstarDataRow> tmp = astar(graph, Point<int>(0, 0), end);
-  // print(tmp);
-  int costToFinish = tmp
-      .firstWhere((element) => element.point == end)
-      .cost;
+  int costToFinish = astar(graph, Point<int>(0, 0), end);
   sw.stop();
-
   print("Cost of getting to finish: \x1B[33m${costToFinish}\x1B[0m");
-  print("⏱ \x1B[33m${sw.elapsedMilliseconds}\x1B[0m ms");
+  print("⏱ \x1B[36m${sw.elapsedMilliseconds}\x1B[0m ms");
 
   print("\x1B[32m## Part 2 ##\x1B[0m");
+  sw.reset(); sw.start();
+  Point<int> end2 = Point<int>(graph.first.length * 5 - 1, graph.length * 5 - 1);
+  int costToFinish2 = astar(graph, Point<int>(0, 0), end2);
+  sw.stop();
+  print("Cost of getting to finish: \x1B[33m${costToFinish2}\x1B[0m");
+  print("⏱ \x1B[36m${sw.elapsedMilliseconds}\x1B[0m ms");
 }
