@@ -9,7 +9,8 @@
       "type": "dart",
       "request": "launch",
       "program": "${file}",
-      "cwd": "${fileDirname}"
+      "cwd": "${fileDirname}",
+      "console": "terminal",
     },
   ]
 }
