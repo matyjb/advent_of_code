@@ -20,7 +20,7 @@ class AstarDataRow {
   Point<int> point;
   int cost;
   late int distance;
-  Point<int>? prevPoint;
+  AstarDataRow? prevPoint;
 
   int get totalCost => cost + distance;
 
@@ -67,13 +67,13 @@ int astar(List<List<int>> graph, Point<int> start, Point<int> end) {
       int cost = currentPoint.cost + genCostForPoint(p, graph);
       AstarDataRow tmp =
           astarQueue.firstWhere((element) => element.point == p, orElse: () {
-        AstarDataRow t = AstarDataRow(p, cost, currentPoint.point, end);
+        AstarDataRow t = AstarDataRow(p, cost, currentPoint, end);
         astarQueue.add(t);
         return t;
       });
       if (tmp.cost > cost) {
         tmp.cost = cost;
-        tmp.prevPoint = currentPoint.point;
+        tmp.prevPoint = currentPoint;
       }
       astarQueue.add(tmp);
     }
