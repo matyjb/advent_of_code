@@ -100,6 +100,9 @@ int countVersionNumbers(Packet packet) {
     return 0;
 }
 
+Packet parse(File file) =>
+    parsePacket(Bits(hexToBits(file.readAsStringSync())));
+
 void part1(Packet packet) {
   int ans = countVersionNumbers(packet);
   print("Sum of version numbers: ${answer(ans)}");
@@ -111,10 +114,7 @@ void part2(Packet packet) {
 }
 
 void main(List<String> args) {
-  String input = File("input.txt").readAsStringSync();
-  Packet packets = parsePacket(Bits(hexToBits(input)));
-
-  Day day = Day(16);
-  day.part1<Packet>(packets, part1);
-  day.part2<Packet>(packets, part2);
+  Day day = Day<Packet>(16, "input.txt", parse);
+  day.part1<Packet>(part1);
+  day.part2<Packet>(part2);
 }

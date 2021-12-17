@@ -90,6 +90,13 @@ int astar(List<List<int>> graph, Point<int> start, Point<int> end) {
   return currentPoint.cost;
 }
 
+List<List<int>> parse(File file) {
+  return file
+      .readAsLinesSync()
+      .map((e) => e.split("").map((e) => int.parse(e)).toList())
+      .toList();
+}
+
 void part1(List<List<int>> graph) {
   Point<int> end = Point<int>(graph.first.length - 1, graph.length - 1);
   int costToFinish = astar(graph, Point<int>(0, 0), end);
@@ -97,20 +104,13 @@ void part1(List<List<int>> graph) {
 }
 
 void part2(List<List<int>> graph) {
-  Point<int> end =
-      Point<int>(graph.first.length * 5 - 1, graph.length * 5 - 1);
+  Point<int> end = Point<int>(graph.first.length * 5 - 1, graph.length * 5 - 1);
   int costToFinish = astar(graph, Point<int>(0, 0), end);
   print("Cost of getting to finish: ${answer(costToFinish)}");
 }
 
 void main(List<String> args) {
-  // List<List<int>> graph = File("smallExample.txt")
-  List<List<int>> graph = File("input.txt")
-      .readAsLinesSync()
-      .map((e) => e.split("").map((e) => int.parse(e)).toList())
-      .toList();
-
-  Day day = Day(15);
-  day.part1(graph, part1);
-  day.part2(graph, part2);
+  Day day = Day(15, "input.txt", parse);
+  day.part1(part1);
+  day.part2(part2);
 }
