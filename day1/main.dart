@@ -4,11 +4,14 @@
 
 import 'dart:io';
 
-void main(List<String> args) {
-  print("## Part 1 ##");
-  int result = 0;
-  List<int> measurements = File("input.txt").readAsLinesSync().map((e) => int.parse(e)).toList();
+import '../day.dart';
 
+List<int> parse(File file) {
+  return file.readAsLinesSync().map((e) => int.parse(e)).toList();
+}
+
+void part1(List<int> measurements) {
+  int result = 0;
   int prevMeasurement = measurements[0];
   for (var i = 1; i < measurements.length; i++) {
     int currentMeasurement = measurements[i];
@@ -18,11 +21,12 @@ void main(List<String> args) {
     prevMeasurement = currentMeasurement;
   }
 
-  print("Number of measurement increases: $result");
+  print("Number of measurement increases: ${answer(result)}");
+}
 
-  print("## Part 2 ##");
-  result = 0;
-  prevMeasurement = measurements[0] + measurements[1] + measurements[2];
+void part2(List<int> measurements) {
+  int result = 0;
+  int prevMeasurement = measurements[0] + measurements[1] + measurements[2];
   for (var i = 1; i < measurements.length - 2; i++) {
     int currentMeasurement = measurements[i] + measurements[i + 1] + measurements[i + 2];
     if(prevMeasurement < currentMeasurement)
@@ -30,5 +34,11 @@ void main(List<String> args) {
     
     prevMeasurement = currentMeasurement;
   }
-  print("Number of measurement increases: $result");
+  print("Number of measurement increases: ${answer(result)}");
+}
+
+void main(List<String> args) {
+  Day day = Day(1, "input.txt", parse);
+  day.runPart<List<int>>(1, part1);
+  day.runPart<List<int>>(2, part2);
 }

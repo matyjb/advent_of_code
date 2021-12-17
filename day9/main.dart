@@ -4,8 +4,10 @@
 
 import 'dart:io';
 import 'dart:math';
+import '../day.dart';
+typedef Grid = List<List<int>>;
 
-Iterable<Point<int>> findAllLowPoints(List<List<int>> heightMap) sync* {
+Iterable<Point<int>> findAllLowPoints(Grid heightMap) sync* {
   int heightMapXLenght = heightMap.first.length;
   int heightMapYLenght = heightMap.length;
   for (var x = 0; x < heightMapXLenght; x++) {
@@ -23,7 +25,7 @@ Iterable<Point<int>> findAllLowPoints(List<List<int>> heightMap) sync* {
   }
 }
 
-int fillHeightMap(Point<int> startingPoint, List<List<int>> heightMap) {
+int fillHeightMap(Point<int> startingPoint, Grid heightMap) {
   int heightMapXLenght = heightMap.first.length;
   int heightMapYLenght = heightMap.length;
   if (startingPoint.x < 0 || startingPoint.y < 0) return 0;
@@ -39,22 +41,26 @@ int fillHeightMap(Point<int> startingPoint, List<List<int>> heightMap) {
       fillHeightMap(startingPoint + Point(0, -1), heightMap);
 }
 
-void main(List<String> args) {
-  List<List<int>> heightMap = File("input.txt")
-      .readAsLinesSync()
+Grid parse(File file) {
+  return file.readAsLinesSync()
       .map((line) => line.split("").map((e) => int.parse(e)).toList())
       .toList();
-  print("## Part 1 ##");
+}
+
+void part1(Grid heightMap) {
   int sumOfRiskLevels = 0;
   List<Point<int>> lowPoints = findAllLowPoints(heightMap).toList();
   for (var lowPoint in lowPoints) {
     sumOfRiskLevels += 1 + heightMap[lowPoint.x][lowPoint.y];
   }
   print("Found ${lowPoints.length} low points");
-  print("Sum of risk levels: $sumOfRiskLevels");
-  print("## Part 2 ##");
+  print("Sum of risk levels: ${answer(sumOfRiskLevels)}");
+}
+
+void part2(Grid heightMap) {
   List<int> basinsRanking = [];
   // for every lowpoint run fill algorithm
+  List<Point<int>> lowPoints = findAllLowPoints(heightMap).toList();
   for (var lowPoint in lowPoints) {
     basinsRanking.add(fillHeightMap(lowPoint, heightMap));
   }
@@ -62,5 +68,11 @@ void main(List<String> args) {
   List<int> top3BasinSizes = basinsRanking.sublist(basinsRanking.length - 3);
   print("Top 3 basins sizes: $top3BasinSizes");
   int finalResult = top3BasinSizes.fold(1, (mul, basinSize) => mul * basinSize);
-  print("Final puzzle answer: $finalResult");
+  print("Final puzzle answer: ${answer(finalResult)}");
+}
+
+void main(List<String> args) {
+  Day day = Day(9, "input.txt", parse);
+  day.runPart<Grid>(1, part1);
+  day.runPart<Grid>(2, part2);
 }

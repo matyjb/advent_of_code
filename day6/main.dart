@@ -3,6 +3,7 @@
  */
 
 import 'dart:io';
+import '../day.dart';
 
 void simulationStep(List<int> oceanState) {
   int createdFishesThisDay = oceanState[0];
@@ -15,32 +16,34 @@ void simulationStep(List<int> oceanState) {
   oceanState[6] += createdFishesThisDay;
 }
 
-void main(List<String> args) {
-  List<int> initialFishes = File("input.txt")
-      .readAsStringSync()
-      .split(",")
-      .map((e) => int.parse(e))
-      .toList();
-
-  int maxDays = 256;
-
-  //map of fish timer to how many of these fishes there are with that timer state
+int runSimFor(List<int> initialFishes, int days){
   List<int> oceanState = List.filled(9, 0);
   initialFishes.forEach((fishTimer) => oceanState[fishTimer] += 1);
-
-  // solution
-  print("⏱ start");
-  Stopwatch sw = Stopwatch()..start();
-  for (var i = 1; i <= maxDays; i++) {
+  for (var i = 1; i <= days; i++) {
     simulationStep(oceanState);
-    if (i == 80 || i == 256) {
-      int sumOfAllFishes = oceanState.fold<int>(
-        0,
-        (previousValue, element) => previousValue + element,
-      );
-      print("After ${i} days ${sumOfAllFishes} fishes.");
-    }
   }
-  sw.stop();
-  print("⏱ stop: ${sw.elapsedTicks} ticks");
+  return oceanState.fold<int>(
+    0,
+    (previousValue, element) => previousValue + element,
+  );
+}
+
+List<int> parse(File file) {
+  return file.readAsStringSync().split(",").map((e) => int.parse(e)).toList();
+}
+
+void part1(List<int> initialFishes) {
+  int days = 80;
+  print("After $days days ${answer(runSimFor(initialFishes, days))} fishes.");
+}
+
+void part2(List<int> initialFishes) {
+  int days = 256;
+  print("After $days days ${answer(runSimFor(initialFishes, days))} fishes.");
+}
+
+void main(List<String> args) {
+  Day day = Day(6, "input.txt", parse);
+  day.runPart<List<int>>(1, part1);
+  day.runPart<List<int>>(2, part2);
 }

@@ -4,6 +4,20 @@
 
 import 'dart:io';
 
+import '../day.dart';
+
+class Input {
+  String template;
+  Map<String, String> rules;
+
+  Input(this.template, this.rules);
+
+  @override
+  String toString() {
+    return "Template: $template, rules: ${rules.length}";
+  }
+}
+
 Map<String, int> countLettersPart1(String s) {
   Map<String, int> result = {};
   for (var i = 0; i < s.length; i++) {
@@ -16,8 +30,8 @@ Map<String, int> countLettersPart1(String s) {
   return result;
 }
 
-void main(List<String> args) {
-  List<String> lines = File("input.txt").readAsLinesSync();
+Input parse(File file) {
+  List<String> lines = file.readAsLinesSync();
   String template = lines[0];
 
   Map<String, String> rules = {
@@ -25,13 +39,15 @@ void main(List<String> args) {
       item.split(" -> ")[0]: item.split(" -> ")[1],
   };
 
-  print("Template:     $template");
-  print("\x1B[32m## Part 1 ##\x1B[0m");
+  return Input(template, rules);
+}
+
+void part1(Input input){
   Map<String, String> rulesConcatSuffixes = {
-    for (var r in rules.entries) r.key: r.value + r.key[1],
+    for (var r in input.rules.entries) r.key: r.value + r.key[1],
   };
   int maxSteps = 10;
-  String currentPolymer = template;
+  String currentPolymer = input.template;
   for (var step = 1; step <= maxSteps; step++) {
     StringBuffer polymer = StringBuffer();
     polymer.write(currentPolymer[0]);
@@ -49,16 +65,17 @@ void main(List<String> args) {
       int min = countedLetters.values
           .fold(max, (min, element) => min > element ? element : min);
 
-      print("After step $step: $max - $min = \x1B[33m${max - min}\x1B[0m");
+      print("After step $step: $max - $min = ${answer(max - min)}");
     }
   }
+}
 
-  print("\x1B[32m## Part 2 ##\x1B[0m");
-  maxSteps = 40;
+void part2(Input input){
+  int maxSteps = 40;
   Map<String, int> countedPairs = {};
-  for (var i = 0; i < template.length - 1; i++) {
+  for (var i = 0; i < input.template.length - 1; i++) {
     countedPairs.update(
-      template.substring(i, i + 2),
+      input.template.substring(i, i + 2),
       (value) => value + 1,
       ifAbsent: () => 1,
     );
@@ -67,9 +84,9 @@ void main(List<String> args) {
   for (var step = 1; step <= maxSteps; step++) {
     Map<String, int> tmp = {};
     for (var entry in countedPairs.entries) {
-      if (rules.containsKey(entry.key)) {
-        String pair1 = entry.key[0] + (rules[entry.key] ?? "");
-        String pair2 = (rules[entry.key] ?? "") + entry.key[1];
+      if (input.rules.containsKey(entry.key)) {
+        String pair1 = entry.key[0] + (input.rules[entry.key] ?? "");
+        String pair2 = (input.rules[entry.key] ?? "") + entry.key[1];
         tmp.update(
           pair1,
           (value) => value + entry.value,
@@ -98,8 +115,8 @@ void main(List<String> args) {
       );
     }
 
-    countedLetters.update(template[0], (value) => value + 1);
-    countedLetters.update(template[template.length - 1], (value) => value + 1);
+    countedLetters.update(input.template[0], (value) => value + 1);
+    countedLetters.update(input.template[input.template.length - 1], (value) => value + 1);
 
     // print("After step $step: ${countedLetters}");
 
@@ -112,4 +129,10 @@ void main(List<String> args) {
           "After step $step: $max - $min = \x1B[33m${(max - min) ~/ 2}\x1B[0m");
     }
   }
+}
+
+void main(List<String> args) {
+  Day day = Day<Input>(14, "input.txt", parse);
+  day.runPart<Input>(1,part1);
+  day.runPart<Input>(2,part2);
 }

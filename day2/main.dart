@@ -3,6 +3,7 @@
  */
 
 import 'dart:io';
+import '../day.dart';
 
 enum CommandType {up, down, forward}
 
@@ -58,22 +59,30 @@ class Command {
   }
 }
 
-void main(List<String> args) {
-  List<Command> commands = File("input.txt").readAsLinesSync().map((line)=>Command.fromLine(line)).toList();
+List<Command> parse(File file) {
+  return file.readAsLinesSync().map((line)=>Command.fromLine(line)).toList();
+}
 
-  print("## Part 1 ##");
+void part1(List<Command> commands) {
   Submarine sub = Submarine();
   for (var com in commands) {
     sub.applyCommandPart1(com);
   }
   print("Final submarine state:  $sub");
-  print("horizontalPos * depth = ${sub.horizontalPos * sub.depth}");
+  print("horizontalPos * depth = ${answer(sub.horizontalPos * sub.depth)}");
+}
 
-  print("## Part 2 ##");
-  sub = Submarine();
+void part2(List<Command> commands) {
+  Submarine sub = Submarine();
   for (var com in commands) {
     sub.applyCommandPart2(com);
   }
   print("Final submarine state:  $sub");
-  print("horizontalPos * depth = ${sub.horizontalPos * sub.depth}");
+  print("horizontalPos * depth = ${answer(sub.horizontalPos * sub.depth)}");
+}
+
+void main(List<String> args) {
+  Day day = Day(2, "input.txt", parse);
+  day.runPart<List<Command>>(1, part1);
+  day.runPart<List<Command>>(2, part2);
 }

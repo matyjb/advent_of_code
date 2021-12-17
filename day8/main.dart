@@ -3,6 +3,7 @@
  */
 
 import 'dart:io';
+import '../day.dart';
 
 String sortPattern(String pattern) {
   var tmp = pattern.split("");
@@ -108,22 +109,28 @@ class Display {
   }
 }
 
-void main(List<String> args) {
-  List<Display> puzzleInputs = File("input.txt")
-      .readAsLinesSync()
-      .map((line) => Display.fromLine(line))
-      .toList();
-  print("## Part 1 ##");
+List<Display> parse(File file) {
+  return file.readAsLinesSync().map((line) => Display.fromLine(line)).toList();
+}
+
+void part1(List<Display> puzzleInputs) {
   int output1478sum = 0;
   puzzleInputs.forEach((puzzle) {
     puzzle.fourDigitOutput.forEach((element) {
       if ([2, 4, 3, 7].contains(element.length)) output1478sum++;
     });
   });
-  print("Count of 1 4 7 8 in output signals: $output1478sum");
+  print("Count of 1 4 7 8 in output signals: ${answer(output1478sum)}");
+}
 
-  print("## Part 2 ##");
+void part2(List<Display> puzzleInputs) {
   int sumOfAllDeducedOutputs =
       puzzleInputs.fold<int>(0, (sum, element) => sum + element.decodeOutput());
-  print("Sum of all deduced outputs: $sumOfAllDeducedOutputs");
+  print("Sum of all deduced outputs: ${answer(sumOfAllDeducedOutputs)}");
+}
+
+void main(List<String> args) {
+  Day day = Day(8, "input.txt", parse);
+  day.runPart<List<Display>>(1, part1);
+  day.runPart<List<Display>>(2, part2);
 }

@@ -5,10 +5,24 @@
 import 'dart:io';
 import 'dart:math';
 
+import '../day.dart';
+
 class FoldIns {
   final String axis;
   final int value;
   FoldIns(this.axis, this.value);
+}
+
+class Input {
+  final Set<Point<int>> points;
+  final List<FoldIns> folds;
+
+  Input(this.points, this.folds);
+
+  @override
+  String toString() {
+    return "${points.length} points, ${folds.length} folds.";
+  }
 }
 
 void printCode(Set<Point<int>> points) {
@@ -35,8 +49,8 @@ void printCode(Set<Point<int>> points) {
   stdout.write("\x1B[0m"); // stop with the yellow
 }
 
-void main(List<String> args) {
-  List<String> lines = File("input.txt").readAsLinesSync();
+Input parse(File file) {
+  List<String> lines = file.readAsLinesSync();
   RegExp pointRegex = RegExp(r'^\d+,\d+');
   RegExp foldRegex = RegExp(r'fold along [xy]=');
   Set<Point<int>> points = lines.where((l) => pointRegex.hasMatch(l)).map((e) {
@@ -48,9 +62,12 @@ void main(List<String> args) {
     return FoldIns(tmp[0], int.parse(tmp[1]));
   }).toList();
 
-  print("\x1B[32m## Part 1 ##\x1B[0m");
-  Set<Point<int>> pointsAfterFolding = Set.from(points);
-  for (var fold in folds) {
+  return Input(points, folds);
+}
+
+Iterable<Set<Point<int>>> performFolding(Input input) sync* {
+  Set<Point<int>> pointsAfterFolding = Set.from(input.points);
+  for (var fold in input.folds) {
     Set<Point<int>> tmp = {};
     for (var p in pointsAfterFolding) {
       switch (fold.axis) {
@@ -72,12 +89,21 @@ void main(List<String> args) {
       }
     }
     pointsAfterFolding = tmp;
-    if (fold == folds.first) {
-      int dotsAmount = pointsAfterFolding.length;
-      print("Found \x1B[33m$dotsAmount\x1B[0m dots after first fold.");
-    }
+    yield pointsAfterFolding;
   }
+}
 
-  print("\x1B[32m## Part 2 ##\x1B[0m");
-  printCode(pointsAfterFolding);
+void part1(Input input) {
+  int dotsAmount = performFolding(input).first.length;
+  print("Found ${answer(dotsAmount)}\x1B[0m dots after first fold."); 
+}
+
+void part2(Input input) {
+  printCode(performFolding(input).last);
+}
+
+void main(List<String> args) {
+  Day day = Day(13, "input.txt", parse);
+  day.runPart<Input>(1, part1);
+  day.runPart<Input>(2, part2);
 }

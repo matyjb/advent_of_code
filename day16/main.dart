@@ -115,6 +115,6 @@ void part2(Packet packet) {
 
 void main(List<String> args) {
   Day day = Day<Packet>(16, "input.txt", parse);
-  day.part1<Packet>(part1);
-  day.part2<Packet>(part2);
+  day.runPart<Packet>(1,part1);
+  day.runPart<Packet>(2,part2);
 }

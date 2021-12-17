@@ -3,6 +3,9 @@
  */
 
 import 'dart:io';
+import '../day.dart';
+
+typedef Lines = List<String>;
 
 List<String> openingChars = ["(", "[", "{", "<"];
 List<String> closingChars = [")", "]", "}", ">"];
@@ -65,17 +68,19 @@ int checkSyntax(String line, List<String> charBufferStack,
   return 0;
 }
 
-void main(List<String> args) {
-  List<String> lines = File("input.txt").readAsLinesSync();
+Lines parse(File file) {
+  return file.readAsLinesSync();
+}
 
-  print("\x1B[32;1m## Part 1 ##\x1B[0m");
+void part1(Lines lines) {
   int sum = 0;
   for (var line in lines) {
     sum += checkSyntax(line, []);
   }
-  print("Sum of scores for illegal lines: $sum");
+  print("Sum of scores for illegal lines: ${answer(sum)}");
+}
 
-  print("\x1B[32;1m## Part 2 ##\x1B[0m");
+void part2(Lines lines) {
   List<int> incompleteLinesRanking = [];
   for (var line in lines) {
     List<String> charbuffer = [];
@@ -94,6 +99,12 @@ void main(List<String> args) {
   incompleteLinesRanking.sort();
   int middleIndex = incompleteLinesRanking.length ~/ 2;
   print(
-    "Middle value of incomplete lines scores: ${incompleteLinesRanking[middleIndex]}",
+    "Middle value of incomplete lines scores: ${answer(incompleteLinesRanking[middleIndex])}",
   );
+}
+
+void main(List<String> args) {
+  Day day = Day(10, "input.txt", parse);
+  day.runPart<Lines>(1, part1);
+  day.runPart<Lines>(2, part2);
 }

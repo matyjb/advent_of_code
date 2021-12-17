@@ -4,10 +4,13 @@
 
 import 'dart:io';
 import 'dart:math';
+import '../day.dart';
 
-void main(List<String> args) {
-  List<String> numbers = File("input.txt").readAsLinesSync().toList();
-  print("## Part 1 ##");
+List<String> parse(File file) {
+  return file.readAsLinesSync().toList();
+}
+
+void part1(List<String> numbers) {
   int numbersLenght = numbers.first.length;
   List<int> numbersDiffs = List.filled(numbersLenght, 0);
 
@@ -28,9 +31,10 @@ void main(List<String> args) {
 
   int consumption = gammaRate * epsilonRate;
 
-  print("Power consumption: $consumption");
-  print("## Part 2 ##");
+  print("Power consumption: ${answer(consumption)}");
+}
 
+void part2(List<String> numbers) {
   // its weird
   // if on bitIndex there are more 1 than 0, keep only that with 1
   // if on bitIndex there are more 0 than 1, keep only that with 0
@@ -57,7 +61,7 @@ void main(List<String> args) {
   List<String> oxygenGeneratorRatingCandidates = List.from(numbers);
   List<String> co2ScrubberRatingCandidates = List.from(numbers);
 
-  for (var i = 0; i < numbersLenght; i++) {
+  for (var i = 0; i < numbers.length; i++) {
     if (oxygenGeneratorRatingCandidates.length > 1)
       filterWithCommonBitOnPosition(oxygenGeneratorRatingCandidates, i);
     if (co2ScrubberRatingCandidates.length > 1)
@@ -70,5 +74,11 @@ void main(List<String> args) {
       int.parse(co2ScrubberRatingCandidates.first, radix: 2);
 
   int lifeSupportRating = oxygenGeneratorRating * co2ScrubberRating;
-  print("Life support rating: $lifeSupportRating");
+  print("Life support rating: ${answer(lifeSupportRating)}");
+}
+
+void main(List<String> args) {
+  Day day = Day(3, "input.txt", parse);
+  day.runPart<List<String>>(1, part1);
+  day.runPart<List<String>>(2, part2);
 }

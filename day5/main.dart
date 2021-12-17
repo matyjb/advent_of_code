@@ -4,6 +4,7 @@
 
 import 'dart:io';
 import 'dart:math';
+import '../day.dart';
 
 class Line {
   final int x1, y1, x2, y2;
@@ -49,15 +50,11 @@ class Line {
   }
 }
 
-void main(List<String> args) {
-  List<Line> lines =
-      File("input.txt").readAsLinesSync().map((e) => Line.fromLine(e)).toList();
+List<Line> parse(File file) {
+  return file.readAsLinesSync().map((e) => Line.fromLine(e)).toList();
+}
 
-  Stopwatch sw = Stopwatch();
-
-  print("## Part 1 ##");
-  print("⏱ >>>Start stopera");
-  sw.start();
+void part1(List<Line> lines) {
   // only horizontal or vertical
   List<Line> linesHorOrVer = lines
       .where((element) => element.isHorizontal() || element.isVertical())
@@ -72,17 +69,13 @@ void main(List<String> args) {
   }
   print("Unique points: ${crossCounters.entries.length}");
   print(
-    "Unique cross points with value >= 2: ${crossCounters.entries.where((element) => element.value >= 2).length}",
+    "Unique cross points with value >= 2: ${answer(crossCounters.entries.where((element) => element.value >= 2).length)}",
   );
+}
 
-  print("⏱ >>>Stop stopera: ${sw.elapsedMilliseconds}ms");
-
-  print("## Part 2 ##");
-  print("⏱ >>>Start stopera");
-  sw.reset();
-  sw.start();
+void part2(List<Line> lines) {
   print("Eligible lines for part 2: ${lines.length}");
-  crossCounters.clear();
+  Map<Point<int>, int> crossCounters = Map<Point<int>, int>();
   for (var line in lines) {
     for (var point in line.subPoints) {
       crossCounters.update(point, (value) => value + 1, ifAbsent: () => 1);
@@ -90,7 +83,12 @@ void main(List<String> args) {
   }
   print("Unique points: ${crossCounters.entries.length}");
   print(
-    "Unique cross points with value >= 2: ${crossCounters.entries.where((element) => element.value >= 2).length}",
+    "Unique cross points with value >= 2: ${answer(crossCounters.entries.where((element) => element.value >= 2).length)}",
   );
-  print("⏱ >>>Stop stopera: ${sw.elapsedMilliseconds}ms");
+}
+
+void main(List<String> args) {
+  Day day = Day(5, "input.txt", parse);
+  day.runPart<List<Line>>(1, part1);
+  day.runPart<List<Line>>(2, part2);
 }

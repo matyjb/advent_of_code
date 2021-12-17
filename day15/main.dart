@@ -111,6 +111,6 @@ void part2(List<List<int>> graph) {
 
 void main(List<String> args) {
   Day day = Day(15, "input.txt", parse);
-  day.part1(part1);
-  day.part2(part2);
+  day.runPart<List<List<int>>>(1,part1);
+  day.runPart<List<List<int>>>(2,part2);
 }

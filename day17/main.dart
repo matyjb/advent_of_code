@@ -89,9 +89,9 @@ void part1(Target target) {
 
 void part2(Target target) {
   Set<Point<int>> result = {};
-  for (var x = 0; x <= 1000; x++) {
-    for (var y = -1000; y < 1000; y++) {
-      stdout.write("${x * 1000 + y+1000}/${2000000}\r");
+  for (var x = 0; x <= target.max.x; x++) {
+    for (var y = target.min.y; y <= 1000; y++) {
+      // stdout.write("${x * target.max.x + y-target.min.y}/${target.max.x*(1000-target.min.y)}\r");
       Probe probe = Probe(Point(x, y));
       bool probeHitTarget = false;
       while (probe.position.y >= target.min.y) {
@@ -111,6 +111,6 @@ void part2(Target target) {
 
 void main(List<String> args) {
   Day day = Day<Target>(17, "input.txt", parse);
-  day.part1<Target>(part1);
-  day.part2<Target>(part2);
+  day.runPart<Target>(1,part1);
+  day.runPart<Target>(2,part2);
 }

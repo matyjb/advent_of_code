@@ -3,6 +3,7 @@
  */
 
 import 'dart:io';
+import '../day.dart';
 
 class Board {
   List<int> board = [];
@@ -79,35 +80,15 @@ class Board {
   }
 }
 
-void part1(List<Board> boards, List<int> winningNumbers) {
-  for (var winningNumber in winningNumbers) {
-    for (var b in boards) {
-      b.markNumber(winningNumber);
-      if (b.checkWin()) {
-        print(b.calcFinalScore(winningNumber));
-        return;
-      }
-    }
-  }
+class Input{
+  List<Board> boards;
+  List<int> winningNumbers;
+
+  Input(this.boards, this.winningNumbers);
 }
 
-void part2(List<Board> boards, List<int> winningNumbers) {
-  int lastWinningScore = 0;
-  List<Board> stillNotWinningBoards = List.from(boards);
-  for (var winningNumber in winningNumbers) {
-    for (var b in stillNotWinningBoards) {
-      b.markNumber(winningNumber);
-      if (b.checkWin()) {
-        lastWinningScore = b.calcFinalScore(winningNumber);
-      }
-    }
-    stillNotWinningBoards.removeWhere((element) => element.winStatus);
-  }
-  print(lastWinningScore);
-}
-
-void main(List<String> args) {
-  List<String> lines = File("input.txt").readAsLinesSync().toList();
+Input parse(File file) {
+  List<String> lines = file.readAsLinesSync().toList();
   List<int> winningNumbers =
       lines.first.split(",").map((number) => int.parse(number)).toList();
 
@@ -121,11 +102,42 @@ void main(List<String> args) {
       currentBoardLines.clear();
     }
   }
-  print("## Part 1 ##");
-  part1(boards, winningNumbers);
-  print("## Part 2 ##");
-  boards.forEach((element) {
-    element.reset();
-  });
-  part2(boards, winningNumbers);
+  return Input(boards, winningNumbers);
+}
+
+void part1(Input input) {
+  List<Board> boards = input.boards;
+  List<int> winningNumbers = input.winningNumbers;
+  for (var winningNumber in winningNumbers) {
+    for (var b in boards) {
+      b.markNumber(winningNumber);
+      if (b.checkWin()) {
+        print("First winning board score: ${answer(b.calcFinalScore(winningNumber))}");
+        return;
+      }
+    }
+  }
+}
+
+void part2(Input input) {
+  List<Board> boards = input.boards;
+  List<int> winningNumbers = input.winningNumbers;
+  int lastWinningScore = 0;
+  List<Board> stillNotWinningBoards = List.from(boards);
+  for (var winningNumber in winningNumbers) {
+    for (var b in stillNotWinningBoards) {
+      b.markNumber(winningNumber);
+      if (b.checkWin()) {
+        lastWinningScore = b.calcFinalScore(winningNumber);
+      }
+    }
+    stillNotWinningBoards.removeWhere((element) => element.winStatus);
+  }
+  print("Last winning board score: ${answer(lastWinningScore)}");
+}
+
+void main(List<String> args) {
+  Day day = Day(4, "input.txt", parse);
+  day.runPart<Input>(1, part1);
+  day.runPart<Input>(2, part2);
 }
