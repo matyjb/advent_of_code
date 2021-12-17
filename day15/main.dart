@@ -6,6 +6,8 @@ import 'dart:collection';
 import 'dart:io';
 import 'dart:math';
 
+import '../day.dart';
+
 int genCostForPoint(Point<int> point, List<List<int>> graph) {
   int chunkXIndex = point.x ~/ graph.length;
   int chunkYIndex = point.y ~/ graph.first.length;
@@ -88,6 +90,19 @@ int astar(List<List<int>> graph, Point<int> start, Point<int> end) {
   return currentPoint.cost;
 }
 
+void part1(List<List<int>> graph) {
+  Point<int> end = Point<int>(graph.first.length - 1, graph.length - 1);
+  int costToFinish = astar(graph, Point<int>(0, 0), end);
+  print("Cost of getting to finish: ${answer(costToFinish)}");
+}
+
+void part2(List<List<int>> graph) {
+  Point<int> end =
+      Point<int>(graph.first.length * 5 - 1, graph.length * 5 - 1);
+  int costToFinish = astar(graph, Point<int>(0, 0), end);
+  print("Cost of getting to finish: ${answer(costToFinish)}");
+}
+
 void main(List<String> args) {
   // List<List<int>> graph = File("smallExample.txt")
   List<List<int>> graph = File("input.txt")
@@ -95,19 +110,7 @@ void main(List<String> args) {
       .map((e) => e.split("").map((e) => int.parse(e)).toList())
       .toList();
 
-  print("\x1B[32m## Part 1 ##\x1B[0m");
-  Stopwatch sw = Stopwatch()..start();
-  Point<int> end = Point<int>(graph.first.length - 1, graph.length - 1);
-  int costToFinish = astar(graph, Point<int>(0, 0), end);
-  sw.stop();
-  print("Cost of getting to finish: \x1B[33m${costToFinish}\x1B[0m");
-  print("⏱ \x1B[36m${sw.elapsedMilliseconds}\x1B[0m ms");
-
-  print("\x1B[32m## Part 2 ##\x1B[0m");
-  sw.reset(); sw.start();
-  Point<int> end2 = Point<int>(graph.first.length * 5 - 1, graph.length * 5 - 1);
-  int costToFinish2 = astar(graph, Point<int>(0, 0), end2);
-  sw.stop();
-  print("Cost of getting to finish: \x1B[33m${costToFinish2}\x1B[0m");
-  print("⏱ \x1B[36m${sw.elapsedMilliseconds}\x1B[0m ms");
+  Day day = Day(15);
+  day.part1(graph, part1);
+  day.part2(graph, part2);
 }
