@@ -20,3 +20,4 @@ class Day<T> {
   }
 }
 String answer(Object s) => "\x1B[33m$s\x1B[0m";
+void printTodo() => print("\x1B[35m>>>TODO<<<\x1B[0m");
