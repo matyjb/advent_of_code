@@ -62,8 +62,10 @@ Image enchance(Image image, String pixelMap) {
       if (pixelMap[valueIndex] == "#") result.add(Point<int>(x, y));
     }
   }
-  return Image(result,
-      image.flippedBackground ? pixelMap[0] != "#" : pixelMap[0] == "#");
+  return Image(
+    result,
+    image.flippedBackground ? pixelMap[0] != "#" : pixelMap[0] == "#",
+  );
 }
 
 Image enchanceNTimes(Image image, String pixelMap, int n) {
@@ -80,7 +82,8 @@ void printImage(Image image) {
 
   for (var y = topLeft.y; y <= bottomRight.y; y++) {
     for (var x = topLeft.x; x <= bottomRight.x; x++) {
-      stdout.write(image.pixels.contains(Point<int>(x, y)) ? "#" : ".");
+      // stdout.write(image.pixels.contains(Point<int>(x, y)) ? "#" : ".");
+      stdout.write(image.pixels.contains(Point<int>(x, y)) ? String.fromCharCode(0x2588) : " ");
     }
     stdout.write("\n");
   }
