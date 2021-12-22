@@ -125,7 +125,7 @@ void part2(PuzzleInput input) {
     // we have to check if instruction intersects with any litRegion
     // if it does we have to add the intersection to litRegion
     // the state (on/off) of added intersection is determined by
-    // notice that first litRegionInstruction is alredy in litRegion so we dont add it
+    // notice that litRegionInstruction is alredy in litRegion so we dont add it
     // [0] (lit litRegionInstruction) + (lit instruction) => add (lit instruction) and (unlit intersection)
     // [1] (lit litRegionInstruction) + (unlit instruction) => add (unlit intersection)
     // for corresponding lit region that intersect with some other lit region we created unlit region
