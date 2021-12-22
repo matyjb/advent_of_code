@@ -129,8 +129,8 @@ void part2(PuzzleInput input) {
     // [0] (lit litRegionInstruction) + (lit instruction) => add (lit instruction) and (unlit intersection)
     // [1] (lit litRegionInstruction) + (unlit instruction) => add (unlit intersection)
     // for corresponding lit region that intersect with some other lit region we created unlit region
-    // (this is the (unlit litRegionInstruction) here) and here with another (lit instruction) we create extra
-    // (unlit intersection) so we have to negate it with (lit intersection)
+    // (this is the (unlit litRegionInstruction) here) and here with another (lit instruction) we created extra
+    // (unlit intersection) one litRegionInstruction before so we have to negate it with (lit intersection)
     // [2] (unlit litRegionInstruction) + (lit instruction) => add (lit instruction) and (lit intersection)
     // [3] (unlit litRegionInstruction) + (unlit instruction) => add (lit intersection)
 
