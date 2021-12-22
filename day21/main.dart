@@ -111,37 +111,31 @@ void part2(PuzzleInput input) {
       universeCounters.remove(unis.key);
       GameState currentState = unis.key;
 
-      if (currentState.p1Moves) {
-        splits.forEach((key, value) {
-          GameState newState = GameState(
+      splits.forEach((key, value) {
+        GameState newState;
+        if (currentState.p1Moves) {
+          newState = GameState(
             (currentState.p1State + key) % 10,
             currentState.p1Score + (currentState.p1State + key) % 10 + 1,
             currentState.p2State,
             currentState.p2Score,
             false,
           );
-          universeCounters.update(
-            newState,
-            (v) => v + universesEvaluated * value,
-            ifAbsent: () => universesEvaluated * value,
-          );
-        });
-      } else {
-        splits.forEach((key, value) {
-          GameState newState = GameState(
+        } else {
+          newState = GameState(
             currentState.p1State,
             currentState.p1Score,
             (currentState.p2State + key) % 10,
             currentState.p2Score + (currentState.p2State + key) % 10 + 1,
             true,
           );
-          universeCounters.update(
-            newState,
-            (v) => v + universesEvaluated * value,
-            ifAbsent: () => universesEvaluated * value,
-          );
-        });
-      }
+        }
+        universeCounters.update(
+          newState,
+          (v) => v + universesEvaluated * value,
+          ifAbsent: () => universesEvaluated * value,
+        );
+      });
     }
   }
   List<int> unisWon = [0, 0];
