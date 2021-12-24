@@ -320,7 +320,7 @@ class State {
     StringBuffer s = StringBuffer();
     s.write("#############\n");
     s.write(
-        "#${hallway.state[0]}${hallway.state[1]}.${hallway.state[2]}.${hallway.state[3]}.${hallway.state[4]}.${hallway.state[5]}${hallway.state[6]}#\n");
+        "#\x1B[36m${hallway.state[0]}${hallway.state[1]} ${hallway.state[2]} ${hallway.state[3]} ${hallway.state[4]} ${hallway.state[5]}${hallway.state[6]}\x1B[0m#\n");
     for (var i = rooms.fold<int>(
                 0,
                 (previousValue, element) =>
@@ -329,7 +329,7 @@ class State {
         i >= 0;
         i--) {
       s.write(
-          "###${rooms[0][i]}#${rooms[1][i]}#${rooms[2][i]}#${rooms[3][i]}###\n");
+          "###\x1B[36m${rooms[0][i]}\x1B[0m#\x1B[36m${rooms[1][i]}\x1B[0m#\x1B[36m${rooms[2][i]}\x1B[0m#\x1B[36m${rooms[3][i]}\x1B[0m###\n");
     }
     s.write("  #########  \n");
     return s.toString();
@@ -412,6 +412,23 @@ HashMap<State, CostAndBefore> organize(State input) {
   return statesScores;
 }
 
+void anim(HashMap<State, CostAndBefore> statesScores, State finalState) {
+  State? stateBefore = statesScores[finalState]!.stateBefore;
+  if (stateBefore == null) {
+    print("\x1B[2J\x1B[0;0H");//clear console
+    print(finalState);
+    print("Press anything to start animation!");
+    stdin.readByteSync();
+    print("\x1B[0;0H");//move carret to 0,0
+    sleep(Duration(milliseconds: 300));
+  } else {
+    anim(statesScores, stateBefore);
+    print("\x1B[0;0H");//move carret to 0,0
+    print(finalState);
+    sleep(Duration(milliseconds: 300));
+  }
+}
+
 void part1(State input) {
   HashMap<State, CostAndBefore> statesScores = organize(input);
   State finalState = State([
@@ -425,6 +442,7 @@ void part1(State input) {
   int minScore = statesScores[finalState]!.cost;
 
   print("Minimal cost of energy used: ${answer(minScore)}");
+  // anim(statesScores, finalState);
 }
 
 void part2(State input) {
@@ -452,6 +470,7 @@ void part2(State input) {
   int minScore = statesScores[finalState]!.cost;
 
   print("Minimal cost of energy used: ${answer(minScore)}");
+  // anim(statesScores, finalState);
 }
 
 void main(List<String> args) {
