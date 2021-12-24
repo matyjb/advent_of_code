@@ -293,12 +293,6 @@ class State {
             newCandidate.rooms[roomEntry.key].enterRoom(hallway.state[i]);
         if (entryCost != null) {
           newCandidate.hallway.state[i] = " ";
-          if (roomEntry.key == 0) {
-            List tmp = costMap.keys.toList();
-            String letter = costMap.keys.toList()[roomEntry.key];
-            int cost = costMap[letter]!;
-            // print(cost);
-          }
           int cost = (entryCost + roomEntry.value) *
               (costMap[costMap.keys.toList()[roomEntry.key]]!);
           yield MapEntry(newCandidate, cost);
@@ -327,8 +321,11 @@ class State {
     s.write("#############\n");
     s.write(
         "#${hallway.state[0]}${hallway.state[1]}.${hallway.state[2]}.${hallway.state[3]}.${hallway.state[4]}.${hallway.state[5]}${hallway.state[6]}#\n");
-    for (var i = rooms.fold<int>(0,
-            (previousValue, element) => max(previousValue, element.maxState))-1;
+    for (var i = rooms.fold<int>(
+                0,
+                (previousValue, element) =>
+                    max(previousValue, element.maxState)) -
+            1;
         i >= 0;
         i--) {
       s.write(
