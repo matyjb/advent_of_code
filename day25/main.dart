@@ -83,16 +83,20 @@ int performStep(World world) {
 }
 
 void part1(World input) {
+  // print("\x1B[2J\x1B[0;0H");//clear console
   // print("Initial");
   // printWorld(input);
+  // stdin.readLineSync();
   int step = 0, moves = 0;
   do {
     step++;
     moves = performStep(input);
+    // print("\x1B[0;0H");//move carret to 0,0
     // print("After $step step:");
     // printWorld(input);
+    // sleep(Duration(milliseconds: 300));
   } while (moves > 0);
-  print("Cucumber are stable after ${answer(step)} steps.");
+  print("Cucumbers stable\nafter ${answer(step)} steps.");
 }
 
 void part2(World input) {
@@ -101,7 +105,8 @@ void part2(World input) {
 }
 
 void main(List<String> args) {
-  Day day = Day<World>(25, "input.txt", parse);
+  Day day = Day<World>(25, "smallExample.txt", parse);
+  // Day day = Day<World>(25, "input.txt", parse);
   day.runPart<World>(1, part1);
   day.runPart<World>(2, part2);
 }
