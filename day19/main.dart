@@ -3,37 +3,40 @@
  */
 
 import 'dart:io';
-import 'dart:math';
 import '../day.dart';
+import 'package:vector_math/vector_math.dart';
 
-class Vec3 {
-  int x, y, z;
-  Vec3([this.x = 0, this.y = 0, this.z = 0]);
+typedef Input = List<List<Vector3>>;
 
-  double distance(Vec3 other) {
-    int dx = x - other.x;
-    int dy = y - other.y;
-    int dz = z - other.z;
-    return sqrt(dx * dx + dy * dy + dz * dz);
+
+Input parse(File file) {
+  Input scanners = [];
+  int currentScanner = 0;
+  for (var line in file.readAsLinesSync()) {
+    if (RegExp(r"--- scanner \d ---").hasMatch(line)) {
+      currentScanner =
+          int.parse(line.replaceAll("--- scanner ", "").replaceAll(" ---", ""));
+      scanners.add([]);
+    } else if (RegExp(r"-?\d+,-?\d+,-?\d+").hasMatch(line)) {
+      List<double> values = line.split(",").map((e) => double.parse(e)).toList();
+      Vector3 v = Vector3(values[0],values[1],values[2]);
+      scanners[currentScanner].add(v);
+    }
   }
+  return scanners;
 }
 
-typedef Scanners = List<List<Vec3>>;
+void part1(Input numbers) {
 
-List<String> parse(File file) {
-  return file.readAsLinesSync();
-}
-
-void part1(List<String> numbers) {
   printTodo();
 }
 
-void part2(List<String> numbers) {
+void part2(Input numbers) {
   printTodo();
 }
 
 void main(List<String> args) {
-  Day day = Day<List<String>>(19, "input.txt", parse);
-  day.runPart<List<String>>(1, part1);
-  day.runPart<List<String>>(2, part2);
+  Day day = Day<Input>(19, "input.txt", parse);
+  day.runPart<Input>(1, part1);
+  day.runPart<Input>(2, part2);
 }
