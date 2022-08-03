@@ -1,12 +1,12 @@
-advent_of_code_2021
+advent_of_code
 
 ANSI color codes
-Black:   \x1B[30m
-Red:     \x1B[31m
-Green:   \x1B[32m
-Yellow:  \x1B[33m
-Blue:    \x1B[34m
-Magenta: \x1B[35m
-Cyan:    \x1B[36m
-White:   \x1B[37m
-Reset:   \x1B[0m
+- `\x1B[30m`&nbsp;&nbsp;Black
+- `\x1B[31m`&nbsp;&nbsp;Red
+- `\x1B[32m`&nbsp;&nbsp;Green
+- `\x1B[33m`&nbsp;&nbsp;Yellow
+- `\x1B[34m`&nbsp;&nbsp;Blue
+- `\x1B[35m`&nbsp;&nbsp;Magenta
+- `\x1B[36m`&nbsp;&nbsp;Cyan
+- `\x1B[37m`&nbsp;&nbsp;White
+- `\x1B[0m` &nbsp;&nbsp; Reset
