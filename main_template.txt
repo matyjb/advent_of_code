@@ -5,17 +5,19 @@
 import 'dart:io';
 import '../../day.dart';
 
-List<int> parse(File file) {
+typedef Input = List<int>;
+
+Input parse(File file) {
   return file.readAsLinesSync().map((e) => int.parse(e)).toList();
 }
 
-void part1(List<int> measurements) {
+void part1(Input input) {
   int result = 0;
 
   print("<WHAT IS THE ANSWER>: ${answer(result)}");
 }
 
-void part2(List<int> measurements) {
+void part2(Input input) {
   int result = 0;
 
   print("<WHAT IS THE ANSWER>: ${answer(result)}");
@@ -23,6 +25,6 @@ void part2(List<int> measurements) {
 
 void main(List<String> args) {
   Day day = Day(<<DAY>>, "input.txt", parse);
-  day.runPart<List<int>>(1, part1);
-  day.runPart<List<int>>(2, part2);
+  day.runPart<Input>(1, part1);
+  day.runPart<Input>(2, part2);
 }
