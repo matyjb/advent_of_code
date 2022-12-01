@@ -1,0 +1,28 @@
+/*
+ * https://adventofcode.com/<<YEAR>>/day/<<DAY>>
+ */
+
+import 'dart:io';
+import '../../day.dart';
+
+List<int> parse(File file) {
+  return file.readAsLinesSync().map((e) => int.parse(e)).toList();
+}
+
+void part1(List<int> measurements) {
+  int result = 0;
+
+  print("<WHAT IS THE ANSWER>: ${answer(result)}");
+}
+
+void part2(List<int> measurements) {
+  int result = 0;
+
+  print("<WHAT IS THE ANSWER>: ${answer(result)}");
+}
+
+void main(List<String> args) {
+  Day day = Day(<<DAY>>, "input.txt", parse);
+  day.runPart<List<int>>(1, part1);
+  day.runPart<List<int>>(2, part2);
+}
