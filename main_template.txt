@@ -3,17 +3,9 @@
  */
 
 import 'dart:io';
-import 'dart:core' as core;
-import 'dart:core';
 import '../../day.dart';
 
 typedef Input = List<int>;
-
-void print(Object? object){
-  if(!silent) {
-    core.print(object);
-  }
-}
 
 Input parse(File file) {
   return file.readAsLinesSync().map((e) => int.parse(e)).toList();
