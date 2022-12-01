@@ -3,24 +3,36 @@
  */
 
 import 'dart:io';
+import 'dart:core' as core;
+import 'dart:core';
 import '../../day.dart';
 
 typedef Input = List<int>;
+
+void print(Object? object){
+  if(!silent) {
+    core.print(object);
+  }
+}
 
 Input parse(File file) {
   return file.readAsLinesSync().map((e) => int.parse(e)).toList();
 }
 
-void part1(Input input) {
+int part1(Input input) {
   int result = 0;
 
+  printTodo();
   print("<WHAT IS THE ANSWER>: ${answer(result)}");
+  return result;
 }
 
-void part2(Input input) {
+int part2(Input input) {
   int result = 0;
 
+  printTodo();
   print("<WHAT IS THE ANSWER>: ${answer(result)}");
+  return result;
 }
 
 void main(List<String> args) {

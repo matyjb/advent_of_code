@@ -13,35 +13,37 @@ Input parse(File file) {
   Input result = [[]];
   int currentElf = 0;
   for (String line in lines) {
-    if(line.isEmpty) {
+    if (line.isEmpty) {
       // create new elf
       result.add([]);
       currentElf++;
-    }else{
+    } else {
       result[currentElf].add(int.parse(line));
     }
   }
   return result;
 }
 
-int sum(int a, int b) => a+b;
+int sum(int a, int b) => a + b;
 
-void part1(Input input) {
-  int result = input.fold(0,(maxValue, elf) => max(maxValue, elf.reduce(sum)));
+int part1(Input input) {
+  int result = input.fold(0, (maxValue, elf) => max(maxValue, elf.reduce(sum)));
 
   print("Most calories carried by one elf: ${answer(result)}");
+  return result;
 }
 
-void part2(Input input) {
+int part2(Input input) {
   List<int> caloriesSums = input.map((elf) => elf.reduce(sum)).toList();
   caloriesSums.sort();
-  int result = caloriesSums.sublist(caloriesSums.length-3).reduce(sum);
+  int result = caloriesSums.sublist(caloriesSums.length - 3).reduce(sum);
 
   print("Sum of top 3 elfs with most calories: ${answer(result)}");
+  return result;
 }
 
 void main(List<String> args) {
   Day day = Day(1, "input.txt", parse);
-  day.runPart<Input>(1, part1);
-  day.runPart<Input>(2, part2);
+  day.runPart<Input>(1, part1, [Pair("example_input.txt", 24000)]);
+  day.runPart<Input>(2, part2, [Pair("example_input.txt", 45000)]);
 }
