@@ -3,7 +3,6 @@
  */
 
 import 'dart:io';
-import 'dart:math';
 import '../../day.dart';
 
 typedef PuzzleInput = List<Operation>;

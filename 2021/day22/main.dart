@@ -48,6 +48,7 @@ class Region {
     if (intersection.checkRegion()) {
       return intersection;
     }
+    return null;
   }
 }
 

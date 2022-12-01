@@ -227,6 +227,7 @@ class Room {
       state.add(amphipod);
       return maxState - state.length + 1;
     }
+    return null;
   }
 
   // returns what amphipod type left and what the cost of leaving was
