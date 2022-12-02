@@ -48,9 +48,9 @@ int part1(Input input) {
 
 int part2(Input input) {
   List<Pair<int, int>> mappedLetters = input.map(mapToInts).toList();
-  // X - 0 = must lose
-  // Y - 1 = must draw
-  // Z - 2 = must win
+  // X = 0 = must lose
+  // Y = 1 = must draw
+  // Z = 2 = must win
   List<Pair<int, int>> mappedLettersWithDesiredHand =
       mappedLetters.map((e) => Pair(e.v0, (e.v0 + e.v1 + 2) % 3)).toList();
 
