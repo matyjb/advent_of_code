@@ -7,53 +7,6 @@ import '../../day.dart';
 
 typedef Input = List<Pair<String, String>>;
 
-enum rps { rock, paper, scrissors }
-
-enum gameResult { win, draw, lose }
-
-const lettersMap = {
-  "A": rps.rock,
-  "B": rps.paper,
-  "C": rps.scrissors,
-  "X": rps.rock,
-  "Y": rps.paper,
-  "Z": rps.scrissors,
-};
-const lettersResultMap = {
-  "X": gameResult.lose,
-  "Y": gameResult.draw,
-  "Z": gameResult.win,
-};
-
-const resultPointsMap = {
-  gameResult.win: 6,
-  gameResult.draw: 3,
-  gameResult.lose: 0,
-};
-
-const handPoints = {
-  rps.rock: 1,
-  rps.paper: 2,
-  rps.scrissors: 3,
-};
-
-gameResult calcGameResult(rps opponent, rps player) {
-  if (opponent == player) return gameResult.draw;
-  if (player == rps.rock && opponent == rps.scrissors) return gameResult.win;
-  if (player == rps.paper && opponent == rps.rock) return gameResult.win;
-  if (player == rps.scrissors && opponent == rps.paper) return gameResult.win;
-  return gameResult.lose;
-}
-
-int calcGameScore(rps opponent, rps player) {
-  return handPoints[player]! +
-      resultPointsMap[calcGameResult(opponent, player)]!;
-}
-
-int calcScore(List<Pair<rps,rps>> games) {
-  return games.fold(0, (acc, game) => acc + calcGameScore(game.v0, game.v1));
-}
-
 Input parse(File file) {
   return file.readAsLinesSync().map((e) {
     var splitVal = e.split(" ");
@@ -61,40 +14,47 @@ Input parse(File file) {
   }).toList();
 }
 
+const lettersToIntsMap = {
+  "A": 0,
+  "B": 1,
+  "C": 2,
+  "X": 0,
+  "Y": 1,
+  "Z": 2,
+};
+Pair<int, int> mapToInts(Pair<String, String> game) {
+  return Pair(lettersToIntsMap[game.v0]!, lettersToIntsMap[game.v1]!);
+}
+
+int calcGameScore(Pair<int, int> game) {
+  int playerHandScore = game.v1 + 1;
+  if (game.v0 == game.v1) return playerHandScore + 3;
+  if (game.v0 == (game.v1 + 1) % 3) return playerHandScore + 0;
+  if (game.v0 == (game.v1 + 2) % 3) return playerHandScore + 6;
+  throw "Weird game ${game.v0} ${game.v1}";
+}
+
+int calcScore(List<Pair<int, int>> games) {
+  return games.fold(0, (acc, game) => acc + calcGameScore(game));
+}
+
 int part1(Input input) {
-  List<Pair<rps, rps>> mappedLetters =
-      input.map((e) => Pair(lettersMap[e.v0]!, lettersMap[e.v1]!)).toList();
+  List<Pair<int, int>> mappedLetters = input.map(mapToInts).toList();
 
   int score = calcScore(mappedLetters);
   print("Final score: ${answer(score)}");
   return score;
 }
 
-rps getPlayerHand(rps opponent, gameResult result) {
-  if (result == gameResult.win) {
-    if (opponent == rps.rock) return rps.paper;
-    if (opponent == rps.paper)
-      return rps.scrissors;
-    else
-      return rps.rock;
-  } else if (result == gameResult.lose) {
-    if (opponent == rps.rock) return rps.scrissors;
-    if (opponent == rps.paper)
-      return rps.rock;
-    else
-      return rps.paper;
-  } else
-    return opponent;
-}
-
 int part2(Input input) {
-  List<Pair<rps, rps>> mappedLetters = input.map((e) {
-    rps opponent = lettersMap[e.v0]!;
-    rps player = getPlayerHand(opponent, lettersResultMap[e.v1]!);
-    return Pair(opponent, player);
-  }).toList();
+  List<Pair<int, int>> mappedLetters = input.map(mapToInts).toList();
+  // X - 0 = must lose
+  // Y - 1 = must draw
+  // Z - 2 = must win
+  List<Pair<int, int>> mappedLettersWithDesiredHand =
+      mappedLetters.map((e) => Pair(e.v0, (e.v0 + e.v1 + 2) % 3)).toList();
 
-  int score = calcScore(mappedLetters);
+  int score = calcScore(mappedLettersWithDesiredHand);
   print("Final score: ${answer(score)}");
   return score;
 }
