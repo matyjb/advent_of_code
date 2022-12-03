@@ -14,26 +14,26 @@ Rucksacks parse(File file) {
 }
 
 int getPriority(String character) {
-  if(character.toUpperCase() == character) {
-    return character.codeUnitAt(0)-upperCaseLetterUnitStart+1+26;
-  }else{
-    return character.codeUnitAt(0)-lowerCaseLetterUnitStart+1;
+  if (character.toUpperCase() == character) {
+    return character.codeUnitAt(0) - upperCaseLetterUnitStart + 1 + 26;
+  } else {
+    return character.codeUnitAt(0) - lowerCaseLetterUnitStart + 1;
   }
 }
 
 int part1(Rucksacks input) {
   int result = 0;
   for (var r in input) {
-    int halfIndex = r.length~/2;
+    int halfIndex = r.length ~/ 2;
     String firstHalf = r.substring(0, halfIndex);
     String secondHalf = r.substring(halfIndex);
     for (var i = 0; i < firstHalf.length; i++) {
       var character = firstHalf[i];
-      if(secondHalf.contains(character)){
-        result+=getPriority(character);
+      if (secondHalf.contains(character)) {
+        result += getPriority(character);
         break;
       }
-    } 
+    }
   }
   print("Sum of all priorities: ${answer(result)}");
   return result;
@@ -41,11 +41,12 @@ int part1(Rucksacks input) {
 
 int part2(Rucksacks input) {
   int result = 0;
-  for (var groupIndex = 0; groupIndex < input.length~/3; groupIndex++) {
-    int groupStartIndex = groupIndex*3;
+  for (var groupIndex = 0; groupIndex < input.length ~/ 3; groupIndex++) {
+    int groupStartIndex = groupIndex * 3;
     for (var i = 0; i < input[groupStartIndex].length; i++) {
       String character = input[groupStartIndex][i];
-      if(input[groupStartIndex+1].contains(character) && input[groupStartIndex+2].contains(character)) {
+      if (input[groupStartIndex + 1].contains(character) &&
+          input[groupStartIndex + 2].contains(character)) {
         result += getPriority(character);
         break;
       }
