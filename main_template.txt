@@ -29,6 +29,6 @@ int part2(Input input) {
 
 void main(List<String> args) {
   Day day = Day(<<DAY>>, "input.txt", parse);
-  day.runPart<Input>(1, part1);
-  day.runPart<Input>(2, part2);
+  day.runPart(1, part1, [Pair("example_input.txt", 0)]);
+  day.runPart(2, part2, [Pair("example_input.txt", 0)]);
 }
