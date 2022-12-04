@@ -26,7 +26,7 @@ class Day<T> {
 
   Day(this.day, this.inputFilePath, this.parseFunction);
 
-  Pair<bool, dynamic> _runTest<T>(
+  dynamic _runTest<T>(
     String inputFilePath,
     Function(T) solveFunction,
     dynamic expectedValue,
@@ -35,7 +35,11 @@ class Day<T> {
     isPrintOn = false;
     dynamic result = solveFunction(input);
     isPrintOn = true;
-    return Pair(result == expectedValue, result);
+    
+    if (result == expectedValue)
+      return result;
+    else
+      throw "❌ Expected ${expectedValue}, got ${result}";
   }
 
   bool _runTests<T>(
@@ -46,10 +50,10 @@ class Day<T> {
 
     List<String> failedTestsMsgs = [];
     for (var test in tests) {
-      Pair<bool, dynamic> testResult =
-          _runTest(test.v0, solveFunction, test.v1);
-      if (!testResult.v0) {
-        failedTestsMsgs.add("❌ Expected ${test.v1} got ${testResult.v1}");
+      try {
+        _runTest(test.v0, solveFunction, test.v1);
+      } catch (error) {
+        failedTestsMsgs.add(error.toString());
       }
     }
     bool isOk = failedTestsMsgs.isEmpty;
