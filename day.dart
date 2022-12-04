@@ -3,17 +3,19 @@ import 'dart:core' as core;
 import 'dart:core';
 
 bool isPrintOn = true;
-void print(Object? object, [bool? forcePrint]){
+void print(Object? object, [bool? forcePrint]) {
   forcePrint ??= false;
-  if(forcePrint || isPrintOn) {
+  if (forcePrint || isPrintOn) {
     core.print(object);
   }
 }
 
-class Pair<T,V> {
+class Pair<T, V> {
   final T v0;
   final V v1;
   Pair(this.v0, this.v1);
+  @override
+  String toString() => "(${v0},${v1})";
 }
 
 class Day<T> {
@@ -24,42 +26,51 @@ class Day<T> {
 
   Day(this.day, this.inputFilePath, this.parseFunction);
 
-  Pair<bool,dynamic> _runTest<T>(String inputFilePath, Function(T) solveFunction, dynamic expectedValue) {
+  Pair<bool, dynamic> _runTest<T>(
+    String inputFilePath,
+    Function(T) solveFunction,
+    dynamic expectedValue,
+  ) {
     T input = parseFunction(File(inputFilePath)) as T;
     isPrintOn = false;
     dynamic result = solveFunction(input);
     isPrintOn = true;
-    return Pair(result == expectedValue,result);
+    return Pair(result == expectedValue, result);
   }
 
-  bool _runTests<T>(Function(T) solveFunction,List<Pair<String, dynamic>> tests) {
-    if(tests.isEmpty){
-      return true;
-    }
+  bool _runTests<T>(
+    Function(T) solveFunction,
+    List<Pair<String, dynamic>> tests,
+  ) {
+    if (tests.isEmpty) return true;
 
     List<String> failedTestsMsgs = [];
     for (var test in tests) {
-      Pair<bool, dynamic> testResult = _runTest(test.v0, solveFunction, test.v1);
-      if(!testResult.v0) {
-        // ❌✅
+      Pair<bool, dynamic> testResult =
+          _runTest(test.v0, solveFunction, test.v1);
+      if (!testResult.v0) {
         failedTestsMsgs.add("❌ Expected ${test.v1} got ${testResult.v1}");
       }
     }
     bool isOk = failedTestsMsgs.isEmpty;
     // print results
-    print(">Tests: ${tests.length-failedTestsMsgs.length}/${tests.length} ${isOk ? "✅" : "❌"}");
+    int passedTests = tests.length - failedTestsMsgs.length;
+    print(">Tests: ${passedTests}/${tests.length} ${isOk ? "✅" : "❌"}");
     for (var failedTestMsg in failedTestsMsgs) {
       print(failedTestMsg);
     }
     return isOk;
   }
 
-  void runPart<T>(int i,Function(T) solveFunction,[List<Pair<String, dynamic>>? tests]) {
+  void runPart<T>(
+    int i,
+    Function(T) solveFunction, [
+    List<Pair<String, dynamic>>? tests,
+  ]) {
     tests ??= List.empty();
     print("\x1B[32m## Day $day - part $i ##\x1B[0m");
-    if(!_runTests(solveFunction, tests)) {
-      return;
-    }
+    if (!_runTests(solveFunction, tests)) return;
+
     T input = parseFunction(File(inputFilePath)) as T;
     // print("\x1B[35mParsed input as: \n${input.runtimeType}\x1B[0m");
     _stopwatch.reset();
@@ -69,5 +80,6 @@ class Day<T> {
     print("⏱ \x1B[36m${_stopwatch.elapsedMilliseconds}\x1B[0m ms");
   }
 }
+
 String answer(Object s) => "\x1B[33m$s\x1B[0m";
-void printTodo() => print("\x1B[35m>>>TODO<<<\x1B[0m");
+void printTodo() => print("\x1B[35m>>>TODO<<<\x1B[0m", true);
