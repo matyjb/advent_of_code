@@ -1,12 +1,14 @@
 #! /bin/bash
-YEAR=$1
-DAY=$2
+DAY=${1:-`date +%-d`} # 1st arg or current day
+YEAR=${2:-`date +%Y`} # 2nd arg or current year
 
 formattedDay=$(printf "%02d" $DAY)
 folderPath="$YEAR/day$formattedDay"
 
 mkdir -p $folderPath
-touch $folderPath/input.txt
+aoc d --year $YEAR --day $DAY --input-only --input-file $folderPath/input.txt --overwrite
 touch $folderPath/example_input.txt
-cp main_template.txt $folderPath/main.dart
+cp main.dart.template $folderPath/main.dart
 sed -i "s/<<YEAR>>/$YEAR/g;s/<<DAY>>/$DAY/g" $folderPath/main.dart
+start chrome https://adventofcode.com/$YEAR/day/$DAY
+cd $folderPath
