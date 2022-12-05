@@ -3,6 +3,7 @@
  */
 
 import 'dart:io';
+import 'dart:math';
 import '../../day.dart';
 
 final numberRe = RegExp(r'\d+');
@@ -25,6 +26,26 @@ class Stacks {
         stacks[instruction.from]!.take(instruction.amount).toList();
     stacks[instruction.from]!.removeRange(0, instruction.amount);
     stacks[instruction.to]!.insertAll(0, reversed ? crates.reversed : crates);
+  }
+
+  @override
+  String toString() {
+    int height =
+        stacks.values.fold(0, (value, element) => max(value, element.length));
+    List<int> keys = stacks.keys.toList()..sort();
+    List<String> lines = [];
+    for (var i = 0; i < height; i++) {
+      String line = keys.map((e) {
+        var currentStack = stacks[e]!;
+        if (currentStack.length > i) {
+          return "[${currentStack[currentStack.length - i - 1]}]";
+        } else {
+          return "   ";
+        }
+      }).join(" ");
+      lines.add(line);
+    }
+    return lines.join("\n");
   }
 }
 
