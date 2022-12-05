@@ -10,5 +10,5 @@ aoc d --year $YEAR --day $DAY --input-only --input-file $folderPath/input.txt --
 touch $folderPath/example_input.txt
 cp main.dart.template $folderPath/main.dart
 sed -i "s/<<YEAR>>/$YEAR/g;s/<<DAY>>/$DAY/g" $folderPath/main.dart
-start chrome https://adventofcode.com/$YEAR/day/$DAY
 cd $folderPath
+start chrome https://adventofcode.com/$YEAR/day/$DAY

@@ -1,5 +1,5 @@
 #! /bin/bash
-YEAR=${1:-"2022"}
+YEAR=${1:-`date +%Y`}
 cd $YEAR
 for d in */ ; do
   cd $d
