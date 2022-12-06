@@ -11,19 +11,25 @@ Input parse(File file) {
   return file.readAsLinesSync().first;
 }
 
-bool isSubstringCharsUnique(String input, [int start = 0, int? end]) {
+// returns -1 if it is unique
+// else returns index of character repeated (eg. abcdhfb => 1)
+int isSubstringCharsUnique(String input, [int start = 0, int? end]) {
   for (var i = start; i < (end ?? input.length) - 1; i++) {
     for (var j = i + 1; j < (end ?? input.length); j++) {
-      if (input[i] == input[j]) return false;
+      if (input[i] == input[j]) return i;
     }
   }
-  return true;
+  return -1;
 }
 
 int searchForUniqueSubstringChars(String input, int bufferLen) {
   for (var end = bufferLen; end <= input.length; end++) {
-    if (isSubstringCharsUnique(input, end - bufferLen, end)) {
+    int start = end - bufferLen;
+    int repeatedCharIndex = isSubstringCharsUnique(input, start, end);
+    if (repeatedCharIndex == -1) {
       return end;
+    } else {
+      end += repeatedCharIndex - start;
     }
   }
   return -1;
