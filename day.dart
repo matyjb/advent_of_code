@@ -32,10 +32,16 @@ class Day<T> {
     dynamic expectedValue,
   ) {
     T input = parseFunction(File(inputFilePath)) as T;
+    dynamic result;
     isPrintOn = false;
-    dynamic result = solveFunction(input);
-    isPrintOn = true;
-    
+    try {
+      result = solveFunction(input);
+      isPrintOn = true;
+    } catch (e) {
+      isPrintOn = true;
+      throw e;
+    }
+
     if (result == expectedValue)
       return result;
     else
