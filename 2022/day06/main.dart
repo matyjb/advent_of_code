@@ -12,23 +12,23 @@ Input parse(File file) {
 }
 
 bool isListItemsUnique(List<String> list) {
-  for (var i = 0; i < list.length-1; i++) {
-    for (var j = i+1; j < list.length; j++) {
-      if(list[i] == list[j])
-        return false;
+  for (var i = 0; i < list.length - 1; i++) {
+    for (var j = i + 1; j < list.length; j++) {
+      if (list[i] == list[j]) return false;
     }
   }
   return true;
 }
 
-int searchForUniqueSubstringChars(String input,int bufferLen) {
+int searchForUniqueSubstringChars(String input, int bufferLen) {
   List<String> lettersBuffer = [];
   for (var i = 0; i < input.length; i++) {
-    if(lettersBuffer.length >= bufferLen)
+    if (lettersBuffer.length >= bufferLen) {
       lettersBuffer.removeAt(0);
+    }
     lettersBuffer.add(input[i]);
-    if(lettersBuffer.length == bufferLen && isListItemsUnique(lettersBuffer)) {
-      return i+1;
+    if (lettersBuffer.length == bufferLen && isListItemsUnique(lettersBuffer)) {
+      return i + 1;
     }
   }
   return -1;
