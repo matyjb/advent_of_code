@@ -11,24 +11,19 @@ Input parse(File file) {
   return file.readAsLinesSync().first;
 }
 
-bool isListItemsUnique(List<String> list) {
-  for (var i = 0; i < list.length - 1; i++) {
-    for (var j = i + 1; j < list.length; j++) {
-      if (list[i] == list[j]) return false;
+bool isSubstringCharsUnique(String input, [int start = 0, int? end]) {
+  for (var i = start; i < (end ?? input.length) - 1; i++) {
+    for (var j = i + 1; j < (end ?? input.length); j++) {
+      if (input[i] == input[j]) return false;
     }
   }
   return true;
 }
 
 int searchForUniqueSubstringChars(String input, int bufferLen) {
-  List<String> lettersBuffer = [];
-  for (var i = 0; i < input.length; i++) {
-    if (lettersBuffer.length >= bufferLen) {
-      lettersBuffer.removeAt(0);
-    }
-    lettersBuffer.add(input[i]);
-    if (lettersBuffer.length == bufferLen && isListItemsUnique(lettersBuffer)) {
-      return i + 1;
+  for (var end = bufferLen; end <= input.length; end++) {
+    if (isSubstringCharsUnique(input, end - bufferLen, end)) {
+      return end;
     }
   }
   return -1;
