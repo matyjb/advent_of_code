@@ -10,12 +10,29 @@ void print(Object? object, [bool? forcePrint]) {
   }
 }
 
-class Pair<T, V> {
+int hash2(Object o0, Object o1) {
+  // quiver code for combining two hashcode
+  int hash0 = o0.hashCode;
+  int hash1 = o1.hashCode;
+  hash0 = 0x1fffffff & (hash0 + hash1);
+  hash0 = 0x1fffffff & (hash0 + ((0x0007ffff & hash0) << 10));
+  return hash0 ^ (hash0 >> 6);
+}
+
+class Pair<T extends Object, V extends Object> {
   final T v0;
   final V v1;
   Pair(this.v0, this.v1);
   @override
   String toString() => "(${v0},${v1})";
+
+  @override
+  bool operator ==(other) {
+    return other is Pair && v0 == other.v0 && v1 == other.v1;
+  }
+
+  @override
+  int get hashCode => hash2(v0, v1);
 }
 
 class Day<T> {
