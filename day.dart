@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:core' as core;
 import 'dart:core';
+import 'dart:math';
 
 bool isPrintOn = true;
 void print(Object? object, [bool? forcePrint]) {
@@ -23,6 +24,9 @@ class Pair<T extends Object, V extends Object> {
   final T v0;
   final V v1;
   Pair(this.v0, this.v1);
+
+  Pair<T, V> copy() => Pair(v0, v1);
+
   @override
   String toString() => "(${v0},${v1})";
 
@@ -33,6 +37,21 @@ class Pair<T extends Object, V extends Object> {
 
   @override
   int get hashCode => hash2(v0, v1);
+}
+
+class Point2D extends Pair<int, int> {
+  Point2D([int v0 = 0, int v1 = 0]) : super(v0, v1);
+
+  int planckLength(Point2D other) {
+    return max((v0 - other.v0).abs(), (v1 - other.v1).abs());
+  }
+
+  Point2D operator +(Point2D other) {
+    return Point2D(v0 + other.v0, v1 + other.v1);
+  }
+
+  @override
+  Point2D copy() => Point2D(v0, v1);
 }
 
 class Day<T> {
