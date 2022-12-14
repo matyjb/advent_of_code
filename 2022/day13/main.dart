@@ -8,8 +8,8 @@ import 'dart:math';
 import '../../day.dart';
 
 class Packet implements Comparable<Packet> {
-  // values can be of type int or List
-  List<dynamic> values;
+  // dynamic values can be of type int or List
+  final List<dynamic> values;
   Packet(this.values);
   factory Packet.fromLine(String line) {
     return Packet(jsonDecode(line));
@@ -79,7 +79,7 @@ int part2(Input input) {
   int p2Index = allPackets.indexOf(p2) + 1;
   int p6Index = allPackets.indexOf(p6) + 1;
   int result = p2Index * p6Index;
-  print("Deviders found on $p2Index*$p6Index = ${answer(result)}");
+  print("Dividers found on $p2Index*$p6Index = ${answer(result)}");
   return result;
 }
 

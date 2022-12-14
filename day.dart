@@ -49,6 +49,12 @@ class Point2D extends Pair<int, int> {
   Point2D operator +(Point2D other) {
     return Point2D(v0 + other.v0, v1 + other.v1);
   }
+  Point2D operator -(Point2D other) {
+    return Point2D(v0 - other.v0, v1 - other.v1);
+  }
+  Point2D operator ~/(int other) {
+    return Point2D(v0 ~/ other, v1 ~/ other);
+  }
 
   @override
   Point2D copy() => Point2D(v0, v1);
