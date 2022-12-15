@@ -46,6 +46,10 @@ class Point2D extends Pair<int, int> {
     return max((v0 - other.v0).abs(), (v1 - other.v1).abs());
   }
 
+  int manhattanDistance(Point2D other) {
+    return (v0 - other.v0).abs() + (v1 - other.v1).abs();
+  }
+
   Point2D operator +(Point2D other) {
     return Point2D(v0 + other.v0, v1 + other.v1);
   }
