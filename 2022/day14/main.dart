@@ -115,6 +115,8 @@ int part1(Cave input) {
 int part2(Cave input) {
   List<Point2D> path = [Point2D(0, 500)];
   HashSet grainsSettled = HashSet();
+  int height = input.bottomRight.v0 + 2;
+  int voidyLeftHeight = height, voidyRightHeight = height;
 
   while (path.length != 0) {
     Point2D? next;
@@ -125,10 +127,24 @@ int part2(Cave input) {
             // not a wall
             (!input.inBounds(p) || !input[p]) &&
             // not a floor
-            input.bottomRight.v0 + 2 > p.v0,
+            height > p.v0,
       );
     } catch (e) {}
     if (next != null) {
+      // if next in left void -> continue;
+      // those will be counted later
+      if (next.v1 < input.topLeft.v1 - 1) {
+        voidyLeftHeight = min(voidyLeftHeight, next.v0);
+        grainsSettled.add(next);
+        continue;
+      }
+      // if next in right void -> continue
+      // those will be counted later
+      if (next.v1 > input.bottomRight.v1 + 1) {
+        voidyRightHeight = min(voidyRightHeight, next.v0);
+        grainsSettled.add(next);
+        continue;
+      }
       path.add(next);
     } else {
       // cant go anywhere = grain settled
@@ -136,7 +152,12 @@ int part2(Cave input) {
     }
   }
 
-  int result = grainsSettled.length;
+  int f(int n) => (pow(n, 2) + n) ~/ 2;
+  int leftGrainsTriangleH = height - voidyLeftHeight - 1;
+  int rightGrainsTriangleH = height - voidyRightHeight - 1;
+  int voidyGrains = f(leftGrainsTriangleH) + f(rightGrainsTriangleH);
+
+  int result = grainsSettled.length + voidyGrains;
   print("Grains settled: ${answer(result)}");
   return result;
 }
