@@ -53,15 +53,51 @@ class Point2D extends Pair<int, int> {
   Point2D operator +(Point2D other) {
     return Point2D(v0 + other.v0, v1 + other.v1);
   }
+
   Point2D operator -(Point2D other) {
     return Point2D(v0 - other.v0, v1 - other.v1);
   }
+
   Point2D operator ~/(int other) {
     return Point2D(v0 ~/ other, v1 ~/ other);
   }
 
   @override
   Point2D copy() => Point2D(v0, v1);
+}
+
+class Point3D {
+  final int x, y, z;
+  Point3D([this.x = 0, this.y = 0, this.z = 0]);
+
+  int manhattanDistance(Point3D other) {
+    return (x - other.x).abs() + (y - other.y).abs() + (z - other.z).abs();
+  }
+
+  Point3D operator +(Point3D other) {
+    return Point3D(x + other.x, y + other.y, z + other.z);
+  }
+
+  Point3D operator -(Point3D other) {
+    return Point3D(x - other.x, y - other.y, z - other.z);
+  }
+
+  Point3D operator ~/(int other) {
+    return Point3D(x ~/ other, y ~/ other, z ~/ other);
+  }
+
+  Point3D copy() => Point3D(x, y, z);
+
+  @override
+  String toString() => "(${x},${y},${z})";
+
+  @override
+  bool operator ==(other) {
+    return other is Point3D && x == other.x && y == other.y && z == other.z;
+  }
+
+  @override
+  int get hashCode => this.toString().hashCode;
 }
 
 class Day<T> {
