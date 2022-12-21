@@ -5,21 +5,29 @@
 import 'dart:io';
 import '../../day.dart';
 
-class MonkeyOperation {
+typedef Monkeys = Map<String, MonkeyYells>;
+
+class MonkeyYells {
   final List<String> dependencies;
   final String? operation;
   final int? immedieteValue;
 
-  MonkeyOperation({
+  MonkeyYells._({
     required this.dependencies,
     this.operation,
     this.immedieteValue,
   });
 
-  int getValue(Map<String, MonkeyOperation> allMonkeys) {
+  MonkeyYells.value(int value)
+      : this._(dependencies: [], immedieteValue: value);
+
+  MonkeyYells.operation(String dep1, String operation, String dep2)
+      : this._(dependencies: [dep1, dep2], operation: operation);
+
+  int yell(Monkeys allMonkeys) {
     if (immedieteValue != null) return immedieteValue!;
-    int val1 = allMonkeys[dependencies.first]!.getValue(allMonkeys);
-    int val2 = allMonkeys[dependencies.last]!.getValue(allMonkeys);
+    int val1 = allMonkeys[dependencies.first]!.yell(allMonkeys);
+    int val2 = allMonkeys[dependencies.last]!.yell(allMonkeys);
     switch (operation) {
       case "+":
         return val1 + val2;
@@ -35,9 +43,7 @@ class MonkeyOperation {
   }
 }
 
-typedef Input = Map<String, MonkeyOperation>;
-
-Input parse(File file) {
+Monkeys parse(File file) {
   RegExp monkeyWithValue = RegExp(r'(.+): (-?\d+)');
   RegExp monkeyWithOperation = RegExp(r'(.+): (.+) (.) (.+)');
   return Map.fromEntries(file.readAsLinesSync().map((e) {
@@ -47,10 +53,7 @@ Input parse(File file) {
       int value = int.parse(match.group(2)!);
       return MapEntry(
         id,
-        MonkeyOperation(
-          immedieteValue: value,
-          dependencies: [],
-        ),
+        MonkeyYells.value(value),
       );
     } else {
       var match = monkeyWithOperation.firstMatch(e)!;
@@ -60,29 +63,26 @@ Input parse(File file) {
       String operation = match.group(3)!;
       return MapEntry(
         id,
-        MonkeyOperation(
-          dependencies: [dep1, dep2],
-          operation: operation,
-        ),
+        MonkeyYells.operation(dep1, operation, dep2),
       );
     }
   }));
 }
 
-int part1(Input input) {
-  int result = input["root"]!.getValue(input);
+int part1(Monkeys input) {
+  int result = input["root"]!.yell(input);
 
   print("'root' value: ${answer(result)}");
   return result;
 }
 
-int part2(Input input) {
+int part2(Monkeys input) {
   // 1. znaleźć dfs'em w której gałęzi jest humn i wypluć ścieżkę
   // 2. dla drugiej gałęzi obliczyć value (expected value)
   // 3. podążając ścieżką wykonywać obliczenia odwrotnie i obliczać nowe expected value
   //    aż dojdziemy do humn
   List<String>? _findDfsPath(
-    Map<String, MonkeyOperation> allMonkeys,
+    Monkeys allMonkeys,
     String start,
     String end, [
     List<String>? currentPathStack,
@@ -102,64 +102,65 @@ int part2(Input input) {
 
   // 1.
   String start = "root";
+  String end = "humn";
   String dep1 = input[start]!.dependencies.first;
   String dep2 = input[start]!.dependencies.last;
 
-  List<String>? path1 = _findDfsPath(input, dep1, "humn");
-  List<String>? path2 = _findDfsPath(input, dep2, "humn");
+  List<String>? path1 = _findDfsPath(input, dep1, end);
+  List<String>? path2 = _findDfsPath(input, dep2, end);
 
   // 2.
-  int expectedValue = path1 != null
-      ? input[dep2]!.getValue(input)
-      : input[dep1]!.getValue(input);
+  int expectedValue =
+      path1 != null ? input[dep2]!.yell(input) : input[dep1]!.yell(input);
 
   // 3.
   List<String> path = (path1 ?? path2)!;
-  String parent = path.first;
-  for (var p in path.skip(1)) {
-    String op = input[parent]!.operation!;
-    int otherValue = input[
-            input[parent]!.dependencies.firstWhere((element) => element != p)]!
-        .getValue(input);
+  MonkeyYells parentMonkey = input[path.first]!;
+  for (var pathMonkey in path.skip(1)) {
+    String op = parentMonkey.operation!;
+    int otherMonkeyValue =
+        input[parentMonkey.dependencies.firstWhere((dep) => dep != pathMonkey)]!
+            .yell(input);
 
     switch (op) {
       case "+":
-        expectedValue -= otherValue;
+        expectedValue -= otherMonkeyValue;
         break;
       case "*":
-        expectedValue ~/= otherValue;
+        expectedValue ~/= otherMonkeyValue;
         break;
       case "/":
-        if (input[parent]!.dependencies.indexOf(p) == 0) {
+        if (parentMonkey.dependencies.indexOf(pathMonkey) == 0) {
           // expectedValue = x / otherValue
           // => x = expectedValue * otherValue
-          expectedValue *= otherValue;
+          expectedValue *= otherMonkeyValue;
         } else {
           // expectedValue = otherValue / x;
           // => x = otherValue / expectedValue
-          expectedValue = otherValue ~/ expectedValue;
+          expectedValue = otherMonkeyValue ~/ expectedValue;
         }
         break;
       case "-":
-        if (input[parent]!.dependencies.indexOf(p) == 0) {
+        if (parentMonkey.dependencies.indexOf(pathMonkey) == 0) {
           // expectedValue = x - otherValue
           // => x = expectedValue + otherValue
-          expectedValue += otherValue;
+          expectedValue += otherMonkeyValue;
         } else {
           // expectedValue = otherValue - x;
           // => x = otherValue - expectedValue
-          expectedValue = otherValue - expectedValue;
+          expectedValue = otherMonkeyValue - expectedValue;
         }
         break;
       default:
+        throw "Unimplemented inverse operation $op";
     }
 
-    parent = p;
+    parentMonkey = input[pathMonkey]!;
   }
 
   int result = expectedValue;
 
-  print("Expected value for 'humn': ${answer(result)}");
+  print("Expected value for '$end': ${answer(result)}");
   return result;
 }
 
