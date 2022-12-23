@@ -62,6 +62,19 @@ class Point2D extends Pair<int, int> {
     return Point2D(v0 ~/ other, v1 ~/ other);
   }
 
+  // returns topLeft and bottomRight points of the bounding rectangle
+  static Pair<Point2D, Point2D> boundingRect(List<Point2D> points) {
+    int minV0 = points.first.v0, maxV0 = points.first.v0;
+    int minV1 = points.first.v1, maxV1 = points.first.v1;
+    for (Point2D p in points.skip(1)) {
+      minV0 = min(minV0, p.v0);
+      maxV0 = max(maxV0, p.v0);
+      minV1 = min(minV1, p.v1);
+      maxV1 = max(maxV1, p.v1);
+    }
+    return Pair(Point2D(minV0, minV1), Point2D(maxV0, maxV1));
+  }
+
   @override
   Point2D copy() => Point2D(v0, v1);
 }
