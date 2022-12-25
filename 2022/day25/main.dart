@@ -12,41 +12,42 @@ Input parse(File file) {
   return file.readAsLinesSync().toList();
 }
 
-class DigitAndCarry {
-  final String digit;
+class SumAndCarry {
+  final String sum;
   final String carry;
 
-  DigitAndCarry(this.digit, this.carry);
+  SumAndCarry(this.sum, this.carry);
 }
 
-Map<String, DigitAndCarry> additionResults = {
-  "==": DigitAndCarry("1", "-"),
-  "=-": DigitAndCarry("2", "-"),
-  "=0": DigitAndCarry("=", "0"),
-  "=1": DigitAndCarry("-", "0"),
-  "=2": DigitAndCarry("0", "0"),
-  "--": DigitAndCarry("=", "0"),
-  "-0": DigitAndCarry("-", "0"),
-  "-1": DigitAndCarry("0", "0"),
-  "-2": DigitAndCarry("1", "0"),
-  "00": DigitAndCarry("0", "0"),
-  "01": DigitAndCarry("1", "0"),
-  "02": DigitAndCarry("2", "0"),
-  "11": DigitAndCarry("2", "0"),
-  "12": DigitAndCarry("=", "1"),
-  "22": DigitAndCarry("-", "1"),
+Map<String, SumAndCarry> additionResults = {
+  "=+=": SumAndCarry("1", "-"),
+  "=+-": SumAndCarry("2", "-"),
+  "=+0": SumAndCarry("=", "0"),
+  "=+1": SumAndCarry("-", "0"),
+  "=+2": SumAndCarry("0", "0"),
+  "-+-": SumAndCarry("=", "0"),
+  "-+0": SumAndCarry("-", "0"),
+  "-+1": SumAndCarry("0", "0"),
+  "-+2": SumAndCarry("1", "0"),
+  "0+0": SumAndCarry("0", "0"),
+  "0+1": SumAndCarry("1", "0"),
+  "0+2": SumAndCarry("2", "0"),
+  "1+1": SumAndCarry("2", "0"),
+  "1+2": SumAndCarry("=", "1"),
+  "2+2": SumAndCarry("-", "1"),
 };
 
-DigitAndCarry halfAdder(String digit1, String digit2) {
-  return additionResults[digit1 + digit2] ?? additionResults[digit2 + digit1]!;
+SumAndCarry halfAdder(String digit1, String digit2) {
+  return additionResults["$digit1+$digit2"] ??
+      additionResults["$digit2+$digit1"]!;
 }
 
-DigitAndCarry fullAdder(String a, String b, String carry) {
-  DigitAndCarry APlusB = halfAdder(a, b);
-  DigitAndCarry APlusBPlusCarry = halfAdder(APlusB.digit, carry);
-  String newCarry = halfAdder(APlusB.carry, APlusBPlusCarry.carry).digit;
+SumAndCarry fullAdder(String a, String b, String carry) {
+  SumAndCarry APlusB = halfAdder(a, b);
+  SumAndCarry APlusBPlusCarry = halfAdder(APlusB.sum, carry);
+  String newCarry = halfAdder(APlusB.carry, APlusBPlusCarry.carry).sum;
 
-  return DigitAndCarry(APlusBPlusCarry.digit, newCarry);
+  return SumAndCarry(APlusBPlusCarry.sum, newCarry);
 }
 
 String part1(Input input) {
@@ -58,9 +59,9 @@ String part1(Input input) {
         String a = sum.length - i < 0 ? "0" : sum[sum.length - i];
         String b = number.length - i < 0 ? "0" : number[number.length - i];
 
-        DigitAndCarry addResult = fullAdder(a, b, carry);
+        SumAndCarry addResult = fullAdder(a, b, carry);
         carry = addResult.carry;
-        digits.add(addResult.digit);
+        digits.add(addResult.sum);
       }
       if (carry != "0") digits.add(carry);
       return digits.reversed.join();
