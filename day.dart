@@ -20,6 +20,22 @@ int hash2(Object o0, Object o1) {
   return hash0 ^ (hash0 >> 6);
 }
 
+// Greatest Common Divisor
+int gcd(int a, int b) {
+  while (a != b) {
+    if (a > b)
+      a -= b;
+    else
+      b -= a;
+  }
+  return a;
+}
+
+// Least Common Multiple
+int lcm(int a, int b) {
+  return (a * b) ~/ gcd(a, b);
+}
+
 class Pair<T extends Object, V extends Object> {
   final T v0;
   final V v1;
