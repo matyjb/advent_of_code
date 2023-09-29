@@ -60,6 +60,7 @@ int traverseTunnelsBFSPart1(Map<String, Map<String, int>> valvesMap,
     maxFlowRate = max(maxFlowRate, possibleFlowRate);
   }
 
+  // print("$minutesLeft * $flowRate + $maxFlowRate",true);
   return minutesLeft * flowRate + maxFlowRate;
 }
 
@@ -104,15 +105,148 @@ int part1(Input input) {
   return result;
 }
 
+Iterable<Pair<T, V>> pairs<T extends Object, V extends Object>(
+  List<T> v0,
+  List<V> v1,
+) sync* {
+  for (var i = 0; i < v0.length; i++) {
+    for (var j = 0; j < v1.length; j++) {
+      yield Pair(v0[i], v1[j]);
+    }
+  }
+}
+
+// returns traversed path
+int traverseTunnelsBFSPart2(
+  Map<String, Map<String, int>> valvesMap,
+  Map<String, int> flowRates,
+  String human,
+  String elephant, [
+  int? minutesLeftHuman,
+  int? minutesLeftElephant,
+  Set<String>? openedValves,
+]) {
+  minutesLeftHuman ??= 26;
+  minutesLeftElephant ??= 26;
+  openedValves ??= Set();
+  if (minutesLeftHuman <= 0 && minutesLeftElephant <= 0) {
+    return 0;
+  }
+
+  int flowRateHuman = openedValves.contains(human) ? 0 : flowRates[human]!;
+  int flowRateElephant =
+      openedValves.contains(elephant) ? 0 : flowRates[elephant]!;
+  openedValves.addAll({human, elephant});
+  Set<String> openedValvesCopy = Set.from(openedValves)
+    ..addAll({human, elephant});
+
+  if (minutesLeftHuman == minutesLeftElephant) {
+    // both move
+    List<MapEntry<String, int>> nextClosedValvesHuman = valvesMap[human]!
+        .entries
+        .where((valve) => !openedValvesCopy.contains(valve.key))
+        .toList();
+    List<MapEntry<String, int>> nextClosedValvesElephant = valvesMap[elephant]!
+        .entries
+        .where((valve) => !openedValvesCopy.contains(valve.key))
+        .toList();
+    int maxFlowRate = 0;
+    if (openedValves.length > 1) {
+      minutesLeftHuman--;
+      minutesLeftElephant--;
+    }
+    for (var nextClosedValve
+        in pairs(nextClosedValvesHuman, nextClosedValvesElephant)) {
+      if (nextClosedValve.v0.key == nextClosedValve.v1.key) continue;
+      maxFlowRate = max(
+          maxFlowRate,
+          traverseTunnelsBFSPart2(
+            valvesMap,
+            flowRates,
+            nextClosedValve.v0.key,
+            nextClosedValve.v1.key,
+            minutesLeftHuman - nextClosedValve.v0.value,
+            minutesLeftElephant - nextClosedValve.v1.value,
+            openedValvesCopy,
+          ));
+    }
+    return maxFlowRate +
+        flowRateHuman * minutesLeftHuman +
+        flowRateElephant * minutesLeftElephant;
+  } else if (minutesLeftHuman > minutesLeftElephant) {
+    // only human moves
+    List<MapEntry<String, int>> nextClosedValvesHuman = valvesMap[human]!
+        .entries
+        .where((valve) => !openedValvesCopy.contains(valve.key))
+        .toList();
+    int maxFlowRate = 0;
+
+    if (openedValves.length > 1) {
+      minutesLeftHuman--;
+    }
+    for (var nextClosedValve in nextClosedValvesHuman) {
+      maxFlowRate = max(
+          maxFlowRate,
+          traverseTunnelsBFSPart2(
+            valvesMap,
+            flowRates,
+            nextClosedValve.key,
+            elephant,
+            minutesLeftHuman - nextClosedValve.value,
+            minutesLeftElephant,
+            openedValvesCopy,
+          ));
+    }
+    return maxFlowRate + flowRateHuman * minutesLeftHuman;
+  } else {
+    // only elephant moves
+    List<MapEntry<String, int>> nextClosedValvesElephant = valvesMap[elephant]!
+        .entries
+        .where((valve) => !openedValvesCopy.contains(valve.key))
+        .toList();
+    int maxFlowRate = 0;
+    if (openedValves.length > 1) {
+      minutesLeftElephant--;
+    }
+    for (var nextClosedValve in nextClosedValvesElephant) {
+      maxFlowRate = max(
+          maxFlowRate,
+          traverseTunnelsBFSPart2(
+            valvesMap,
+            flowRates,
+            human,
+            nextClosedValve.key,
+            minutesLeftHuman,
+            minutesLeftElephant - nextClosedValve.value,
+            openedValvesCopy,
+          ));
+    }
+    return maxFlowRate + flowRateElephant * minutesLeftElephant;
+  }
+}
+
 int part2(Input input) {
-  int result = 0;
-  printTodo();
+  // wygenerować wszystkie możliwe ścieżki i ich maksymalny przepływ List<Map<int,Pair<String,int>>>
+  
+
+  Map<String, Map<String, int>> precomputedDistancesToValves = Map.fromEntries(
+      input.v0.entries
+          .where((e) => e.value > 0)
+          .map((e) => MapEntry(e.key, djikstra(input, e.key))));
+  precomputedDistancesToValves.addAll({"AA": djikstra(input, "AA")});
+
+  int result = traverseTunnelsBFSPart2(
+    precomputedDistancesToValves,
+    input.v0,
+    "AA",
+    "AA",
+  );
   print("<WHAT IS THE ANSWER>: ${answer(result)}");
   return result;
 }
 
 void main(List<String> args) {
   Day day = Day(16, "input.txt", parse);
-  day.runPart(1, part1, [Pair("example_input.txt", 1651)]);
+  // day.runPart(1, part1, [Pair("example_input.txt", 1651)]);
   day.runPart(2, part2, [Pair("example_input.txt", 1707)]);
 }

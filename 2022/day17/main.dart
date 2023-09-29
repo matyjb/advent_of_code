@@ -259,20 +259,29 @@ int part1(Input input) {
     staticBlocks = state;
   }
   int result = staticBlocks.keys.reduce(max) + 1;
-  print("<WHAT IS THE ANSWER>: ${answer(result)}");
+  print("Tetris height: ${answer(result)}");
   return result;
 }
 
-int part2(Input input) {
-  int result = 0;
+// String calcColumnsHeight(Map<int, List<Block>> state) {
+//   int height = state.keys.reduce(max) + 1;
 
-  printTodo();
-  print("<WHAT IS THE ANSWER>: ${answer(result)}");
+// }
+
+int part2(Input input) {
+  Map<String,int> patternHeight = {};
+
+  Map<int, List<Block>> staticBlocks = {};
+  for (var state in simulateTetris(input, 1000000000000)) {
+    staticBlocks = state;
+  }
+  int result = staticBlocks.keys.reduce(max) + 1;
+  print("Tetris height: ${answer(result)}");
   return result;
 }
 
 void main(List<String> args) {
   Day day = Day(17, "input.txt", parse);
   day.runPart(1, part1, [Pair("example_input.txt", 3068)]);
-  day.runPart(2, part2, [Pair("example_input.txt", 1514285714288)]);
+  // day.runPart(2, part2, [Pair("example_input.txt", 1514285714288)]);
 }

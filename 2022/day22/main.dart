@@ -86,7 +86,7 @@ class Turtle {
           nextPosition = Point2D(nextPosition.v0, newCol);
           break;
         case Direction.up:
-          String tmp = map.reversed.firstWhere(
+          String tmp = map.lastWhere(
               (l) => l[nextPosition.v1] == "#" || l[nextPosition.v1] == ".");
           int newRow = map.indexOf(tmp);
           nextPosition = Point2D(newRow, nextPosition.v1);
