@@ -1,0 +1,7 @@
+name: day05
+
+environment:
+  sdk: '>=2.15.0 <3.0.0'
+  
+dependencies:
+  collection: ^1.18.0 
