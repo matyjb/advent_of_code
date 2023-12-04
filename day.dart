@@ -202,5 +202,9 @@ class Day<T> {
   }
 }
 
+extension NumIterableExtensions on Iterable<num> {
+  sum() => fold<num>(0, (s, value) => s+value);
+}
+
 String answer(Object s) => "\x1B[33m$s\x1B[0m";
 void printTodo() => print("\x1B[35m>>>TODO<<<\x1B[0m", true);
