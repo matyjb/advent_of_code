@@ -206,5 +206,22 @@ extension NumIterableExtensions on Iterable<num> {
   sum() => fold<num>(0, (s, value) => s+value);
 }
 
+extension ListExtension on List {
+  bool startsWith(List other, [int? end]) {
+    end ??= other.length;
+    if(other.length > length) return false;
+
+    for (var i = 0; i < end; i++) {
+      if(other[i] != this[i]) return false;
+    }
+
+    return true;
+  }
+
+  bool isEqualTo(List other) {
+    return other.length == length && startsWith(other);
+  }
+}
+
 String answer(Object s) => "\x1B[33m$s\x1B[0m";
 void printTodo() => print("\x1B[35m>>>TODO<<<\x1B[0m", true);
