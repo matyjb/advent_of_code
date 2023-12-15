@@ -223,5 +223,9 @@ extension ListExtension on List {
   }
 }
 
+extension MapExtension on Map {
+  String toBetterString() => "{\n${entries.map((e) => "${e.key}: ${e.value}").join("\n")}\n}";
+}
+
 String answer(Object s) => "\x1B[33m$s\x1B[0m";
 void printTodo() => print("\x1B[35m>>>TODO<<<\x1B[0m", true);
