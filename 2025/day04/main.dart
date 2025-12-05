@@ -19,13 +19,10 @@ PaperRollsCoords parse(File file) {
     }
   }
 
-  print(result.length, true);
-
   return result;
 }
 
 int part1(PaperRollsCoords input) {
-  print(input, true);
   int result = input.fold(0, (acc, coord) {
     int adjecentCount = 0;
     final (row, col) = coord;

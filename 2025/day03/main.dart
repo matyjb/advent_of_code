@@ -16,43 +16,44 @@ Banks parse(File file) {
       .toList();
 }
 
+int calcBatteryPackOutput(BatteryJoltages bank, int digitsCount) {
+  int digitsLeft = digitsCount;
+  int lastDigitIndex = -1;
+
+  int batteryOutput = 0;
+  while (digitsLeft > 0) {
+    final slice = bank
+        .take(bank.length - digitsLeft + 1)
+        .skip(lastDigitIndex + 1);
+    final digit = slice.reduce(max);
+    lastDigitIndex = bank.indexOf(digit, lastDigitIndex + 1);
+    digitsLeft--;
+    batteryOutput *= 10;
+    batteryOutput += digit;
+  }
+  return batteryOutput;
+}
+
 int part1(Banks input) {
+  final batteriesPerBank = 2;
   final result = input.fold(0, (acc, bank) {
-    final digitOfTenths = bank.take(bank.length - 1).reduce(max);
-    final digitOfTenthsIndex = bank.indexOf(digitOfTenths);
-    final digitOfOnes = bank.skip(digitOfTenthsIndex + 1).reduce(max);
-    final batteryOutput = digitOfTenths * 10 + digitOfOnes;
-    return acc + batteryOutput;
+    return calcBatteryPackOutput(bank, batteriesPerBank) + acc;
   });
 
-  print("Total output of all battery bank (2 bat per bank): ${answer(result)}");
+  print(
+    "Total output of all battery banks ($batteriesPerBank bat per bank): ${answer(result)}",
+  );
   return result;
 }
 
 int part2(Banks input) {
+  final batteriesPerBank = 12;
   final result = input.fold(0, (acc, bank) {
-    int digitsLeft = 12;
-    int lastDigitIndex = -1;
-    List<int> selectedDigits = [];
-    while (digitsLeft > 0) {
-      final slice = bank
-          .take(bank.length - digitsLeft + 1)
-          .skip(lastDigitIndex + 1);
-      final digit = slice.reduce(max);
-      lastDigitIndex = bank.indexOf(digit, lastDigitIndex + 1);
-      digitsLeft--;
-      selectedDigits.add(digit);
-    }
-    int batteryOutput = 0;
-    for (var i = 0; i < selectedDigits.length; i++) {
-      batteryOutput +=
-          selectedDigits[i] * pow(10, selectedDigits.length - i - 1).toInt();
-    }
-    return acc + batteryOutput;
+    return calcBatteryPackOutput(bank, batteriesPerBank) + acc;
   });
 
   print(
-    "Total output of all battery banks (12 bat per bank): ${answer(result)}",
+    "Total output of all battery banks ($batteriesPerBank bat per bank): ${answer(result)}",
   );
   return result;
 }
