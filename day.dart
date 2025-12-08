@@ -203,16 +203,17 @@ class Day<T> {
 }
 
 extension NumIterableExtensions on Iterable<num> {
-  sum() => fold<num>(0, (s, value) => s+value);
+  sum() => fold<num>(0, (s, value) => s + value);
+  multiply() => fold<num>(1, (s, value) => s * value);
 }
 
 extension ListExtension on List {
   bool startsWith(List other, [int? end]) {
     end ??= other.length;
-    if(other.length > length) return false;
+    if (other.length > length) return false;
 
     for (var i = 0; i < end; i++) {
-      if(other[i] != this[i]) return false;
+      if (other[i] != this[i]) return false;
     }
 
     return true;
@@ -224,7 +225,8 @@ extension ListExtension on List {
 }
 
 extension MapExtension on Map {
-  String toBetterString() => "{\n${entries.map((e) => "${e.key}: ${e.value}").join("\n")}\n}";
+  String toBetterString() =>
+      "{\n${entries.map((e) => "${e.key}: ${e.value}").join("\n")}\n}";
 }
 
 String answer(Object s) => "\x1B[33m$s\x1B[0m";
